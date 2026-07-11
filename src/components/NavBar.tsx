@@ -11,6 +11,7 @@ const LINKS = [
   { id: 'services', label: 'Services' },
   { id: 'website', label: 'Need a Website?' },
   { id: 'ranger', label: 'Ford Ranger XL 2024' },
+  { id: 'play', label: '🎮 Play' },
   { id: 'contact', label: 'Contact' },
 ];
 
