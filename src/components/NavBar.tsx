@@ -12,6 +12,7 @@ const LINKS = [
   { id: 'website', label: 'Need a Website?' },
   { id: 'ranger', label: 'Ford Ranger XL 2024' },
   { id: 'play', label: '🎮 Play' },
+  { id: 'tools', label: '🛠 Tools' },
   { id: 'contact', label: 'Contact' },
 ];
 
