@@ -107,12 +107,12 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
               onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}>
               View Services
             </button>
-            <button onClick={() => onNav('contact')}
-              style={{ background: '#fff', border: '1.5px solid rgba(37,99,235,0.3)', color: '#2563eb', padding: '0.85rem 2rem', borderRadius: 10, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(37,99,235,0.1)' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(37,99,235,0.05)'; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = '#fff'; }}>
-              Get In Touch
-            </button>
+            <a href={`${import.meta.env.BASE_URL}#ask`} target="_blank" rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: '#fff', border: '1.5px solid rgba(37,99,235,0.3)', color: '#2563eb', padding: '0.85rem 2rem', borderRadius: 10, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '0.95rem', cursor: 'pointer', transition: 'all 0.2s', boxShadow: '0 2px 8px rgba(37,99,235,0.1)', textDecoration: 'none' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLAnchorElement).style.background = 'rgba(37,99,235,0.05)'; }}
+              onMouseLeave={e => { (e.currentTarget as HTMLAnchorElement).style.background = '#fff'; }}>
+              💬 Ask LvTS
+            </a>
           </div>
 
           {/* Stat strip */}

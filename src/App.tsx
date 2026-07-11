@@ -8,8 +8,9 @@ import RangerPage from './pages/RangerPage';
 import ContactPage from './pages/ContactPage';
 import PlayPage from './pages/PlayPage';
 import ToolsPage from './pages/ToolsPage';
+import AskLvtsPage from './pages/AskLvtsPage';
 
-const VALID_PAGES = ['home', 'services', 'website', 'ranger', 'play', 'tools', 'contact'];
+const VALID_PAGES = ['home', 'services', 'website', 'ranger', 'play', 'tools', 'ask', 'contact'];
 
 function initialPage() {
   const hash = window.location.hash.replace('#', '');
@@ -29,6 +30,7 @@ export default function App() {
       {page === 'ranger'   && <RangerPage />}
       {page === 'play'     && <PlayPage />}
       {page === 'tools'    && <ToolsPage />}
+      {page === 'ask'      && <AskLvtsPage />}
       {page === 'contact'  && <ContactPage />}
     </>
   );

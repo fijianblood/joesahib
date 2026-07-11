@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Zap, ExternalLink } from 'lucide-react';
+import { Menu, X, ExternalLink } from 'lucide-react';
 
 interface NavBarProps {
   page: string;
@@ -13,6 +13,7 @@ const LINKS = [
   { id: 'ranger', label: 'Ford Ranger XL 2024' },
   { id: 'play', label: '🎮 Play' },
   { id: 'tools', label: '🛠 Tools' },
+  { id: 'ask', label: '💬 Ask LvTS' },
   { id: 'contact', label: 'Contact' },
 ];
 
@@ -33,38 +34,35 @@ export default function NavBar({ page, onNav }: NavBarProps) {
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'nav-glass' : ''}`}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 1.5rem', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="LVTS banner" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
-          <button onClick={() => { onNav('home'); setOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'none', border: 'none', cursor: 'pointer' }}>
-            <div className="pulse-ring" style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#2563eb,#0891b2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-              <Zap size={18} color="#fff" fill="#fff" />
-            </div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <button onClick={() => { onNav('home'); setOpen(false); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 0 }}>
+            <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="LVTS banner" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
           </button>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }} className="hidden-mobile">
+        <div style={{ display: 'flex', gap: '0.1rem', alignItems: 'center' }} className="hidden-mobile">
           {LINKS.map(l => l.id === 'home' ? (
             <button key={l.id} onClick={() => onNav(l.id)}
               style={{
                 background: page === l.id ? 'rgba(37,99,235,0.08)' : 'none',
                 border: page === l.id ? '1px solid rgba(37,99,235,0.3)' : '1px solid transparent',
                 color: page === l.id ? '#2563eb' : '#475569',
-                padding: '0.45rem 1.1rem', borderRadius: 8,
-                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.875rem',
-                cursor: 'pointer', transition: 'all 0.2s',
+                padding: '0.4rem 0.65rem', borderRadius: 8,
+                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.82rem',
+                cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap',
               }}>
               {l.label}
             </button>
           ) : (
             <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer"
               style={{
-                display: 'flex', alignItems: 'center', gap: '0.35rem',
+                display: 'flex', alignItems: 'center', gap: '0.3rem',
                 background: 'none', border: '1px solid transparent',
-                color: '#475569', padding: '0.45rem 1.1rem', borderRadius: 8,
-                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.875rem',
-                cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none',
+                color: '#475569', padding: '0.4rem 0.65rem', borderRadius: 8,
+                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.82rem',
+                cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none', whiteSpace: 'nowrap',
               }}>
-              {l.label} <ExternalLink size={12} />
+              {l.label} <ExternalLink size={11} />
             </a>
           ))}
         </div>
