@@ -9,7 +9,6 @@ const SOCIALS = [
   { label: 'Content Tours', handle: 'Korolevu, Sigatoka', url: 'https://contentrentaltour.netlify.app/', color: '#d2dc14' },
   { label: 'One Nation Political Party', handle: 'One Nation Fiji', url: 'https://onenationfiji.netlify.app/', color: '#3ea97e' },
   { label: 'Red-Hill Real Estate', handle: 'Suva, Fiji', url: 'https://redhillrealestate.netlify.app/', color: '#cd0f0f' },
-  { label: 'Pacific Blue Shipping Partnership', handle: 'Marshall Islands', url: 'https://pacificblueshippingpartnership.netlify.app/', color: '#1250d5' },
    { label: 'TikTok', handle: '@fijianblood8', url: 'https://www.tiktok.com/@fijianblood8', color: '#06b6d4' },
 ];
 
@@ -173,7 +172,7 @@ export default function ContactPage() {
 
             {/* Social links */}
             <div>
-              <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563eb', marginBottom: '1rem' }}>Find Me Online</div>
+              <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563eb', marginBottom: '1rem' }}>Personal Projects</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 {SOCIALS.map(s => (
                   <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="card-3d"
