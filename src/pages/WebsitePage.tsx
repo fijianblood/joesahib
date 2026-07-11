@@ -192,7 +192,7 @@ export default function WebsitePage({ onNav }: { onNav: (p: string) => void }) {
                 onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}>
                 Let's Discuss →
               </button>
-              <a href="https://fijianblood.github.io/joesahib/" target="_blank" rel="noopener noreferrer"
+              <a href="https://linktr.ee/sahibjoe" target="_blank" rel="noopener noreferrer"
                 style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', border: '1px solid #e2e8f0', color: '#334155', padding: '0.85rem 1.4rem', borderRadius: 10, fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
                 <Globe size={16}/> LvTS Reference <ExternalLink size={13}/>
               </a>
