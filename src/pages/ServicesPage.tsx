@@ -59,7 +59,7 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
         </div>
 
         {/* Main service cards with video */}
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(320px,100%),1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
           {SERVICES.map((s, i) => {
             const ref = useScrollFade();
             return (
@@ -121,7 +121,7 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
           <div ref={flyerRef} className="fade-in">
             <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563eb', marginBottom: '1rem' }}>Repair Flyer</div>
             <div className="card-3d" style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #e2e8f0' }}>
-              <img src="/laptop-flyer.jpg" alt="Laptop Repair Services" style={{ width: '100%', display: 'block' }} />
+              <img src={`${import.meta.env.BASE_URL}laptop-flyer.jpg`} alt="Laptop Repair Services" style={{ width: '100%', display: 'block' }} />
             </div>
             <div style={{ marginTop: '1.5rem', background: 'linear-gradient(135deg,rgba(37,99,235,0.12),rgba(6,182,212,0.04))', border: '1px solid rgba(37,99,235,0.2)', borderRadius: 12, padding: '1.2rem' }}>
               <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.25rem' }}>Laptop/Computer/Printer</div>
@@ -146,7 +146,7 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
               {[
                 { label: 'Address', value: 'Raiwai, Suva, Fiji' },
                 { label: 'Phone', value: '8331088 / 7466941' },
-                { label: 'Email', value: 'lomavata88@gmail.com' },
+                { label: 'Email', value: 'lomavatatechfiji@gmail.com' },
                 { label: 'TikTok', value: '@fijianblood8' },
               ].map(c => (
                 <div key={c.label} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: '0.8rem' }}>

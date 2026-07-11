@@ -284,7 +284,7 @@ export default function RangerPage() {
 
           {/* SERVICE HISTORY */}
           <SectionTitle>Service History</SectionTitle>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(360px,1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(360px,100%),1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
             {SERVICES.map(s => (
               <div key={s.id} style={{ background: '#0d1f3c', border: '1px solid #1e3355', borderRadius: 10, overflow: 'hidden' }}>
                 {/* Header */}

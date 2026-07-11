@@ -88,8 +88,8 @@ export default function ContactPage() {
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: '1rem', marginBottom: '3rem' }}>
           {[
             { icon: <Phone size={22} />, label: 'Phone', value: '8331088 / 7466941', href: 'tel:+6798331088', color: '#2563eb' },
-            { icon: <Mail size={22} />, label: 'Email', value: 'lomavata88@gmail.com', href: 'mailto:lomavata88@gmail.com', color: '#2563eb' },
-            { icon: <Mail size={22} />, label: 'Alt Email', value: 'lomavata88@gmail.com', href: 'mailto:lomavata88@gmail.com', color: '#7c3aed' },
+            { icon: <Mail size={22} />, label: 'Email', value: 'lomavatatechfiji@gmail.com', href: 'mailto:lomavatatechfiji@gmail.com', color: '#2563eb' },
+            { icon: <Mail size={22} />, label: 'Alt Email', value: 'lomavatatechfiji@gmail.com', href: 'mailto:lomavatatechfiji@gmail.com', color: '#7c3aed' },
             { icon: <MapPin size={22} />, label: 'Location', value: 'Raiwai, Suva, Fiji', href: '#', color: '#f59e0b' },
           ].map(c => (
             <a key={c.label} href={c.href} className="card-3d"
@@ -104,7 +104,7 @@ export default function ContactPage() {
 
       {/* Form + Socials */}
       <section style={{ padding: '0 1.5rem 80px' }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: '2.5rem', alignItems: 'start' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(320px,100%),1fr))', gap: '2.5rem', alignItems: 'start' }}>
 
           {/* Form */}
           <div style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, padding: '2rem' }}>
@@ -163,7 +163,7 @@ export default function ContactPage() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             {/* Photo */}
             <div style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #e2e8f0', position: 'relative' }}>
-              <img src="/joewithmv.jpg" alt="Josese with his Ranger" style={{ width: '100%', display: 'block', maxHeight: 280, objectFit: 'cover' }} />
+              <img src={`${import.meta.env.BASE_URL}joewithmv.jpg`} alt="Josese with his Ranger" style={{ width: '100%', display: 'block', maxHeight: 280, objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,15,0.8), transparent 50%)' }} />
               <div style={{ position: 'absolute', bottom: '1rem', left: '1rem' }}>
                 <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Josese Sahib</div>

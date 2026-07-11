@@ -202,9 +202,9 @@ export default function WebsitePage({ onNav }: { onNav: (p: string) => void }) {
           {/* Gig banner image — joe.jpg composited on copy.jpeg layout */}
           <div style={{ position: 'relative' }}>
             <div className="card-3d" style={{ borderRadius: 18, overflow: 'hidden', boxShadow: '0 20px 60px rgba(37,99,235,0.15)', border: '1px solid rgba(37,99,235,0.1)' }}>
-              <img src="/gig-banner.jpg" alt="Josese Sahib — Website Development" style={{ width: '100%', display: 'block' }}
-                   onError={e => { (e.target as HTMLImageElement).src = '/joe.jpg'; }} />
-              <img src="/stack.png" alt="Technology stack" style={{ width: '100%', display: 'block', marginTop: 8 }} />
+              <img src={`${import.meta.env.BASE_URL}gig-banner.jpg`} alt="Josese Sahib — Website Development" style={{ width: '100%', display: 'block' }}
+                   onError={e => { (e.target as HTMLImageElement).src = `${import.meta.env.BASE_URL}joe.jpg`; }} />
+              <img src={`${import.meta.env.BASE_URL}stack.png`} alt="Technology stack" style={{ width: '100%', display: 'block', marginTop: 8 }} />
             </div>
             {/* Floating badge */}
             <div style={{ position: 'absolute', bottom: '-1rem', right: '-1rem', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '0.7rem 1rem', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>
@@ -289,7 +289,7 @@ export default function WebsitePage({ onNav }: { onNav: (p: string) => void }) {
           {/* Photo */}
           <div ref={gigRef} className="fade-in" style={{ position: 'relative' }}>
             <div style={{ borderRadius: 18, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 12px 40px rgba(37,99,235,0.1)' }}>
-              <img src="/joe.jpg" alt="Josese Sahib" style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 520 }} />
+              <img src={`${import.meta.env.BASE_URL}joe.jpg`} alt="Josese Sahib" style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 520 }} />
             </div>
             {/* Floating stat cards */}
             <div className="card-3d" style={{ position: 'absolute', top: '1rem', right: '-1.2rem', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 12, padding: '0.8rem 1rem', boxShadow: '0 8px 24px rgba(0,0,0,0.1)' }}>

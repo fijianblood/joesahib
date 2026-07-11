@@ -116,7 +116,7 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
           </div>
 
           {/* Stat strip */}
-          <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '1px', background: 'rgba(37,99,235,0.1)', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(37,99,235,0.12)' }}>
+          <div style={{ marginTop: '4rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(140px,1fr))', gap: '1px', background: 'rgba(37,99,235,0.1)', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(37,99,235,0.12)' }}>
             {[{ n: '10+', l: 'Years IT Experience' }, { n: '1500+', l: 'Devices Repaired' }, { n: '4', l: 'Web Projects Live' }, { n: '500+', l: 'Projects Not Live' }].map(s => (
               <div key={s.l} style={{ background: '#fff', padding: '1.2rem 1rem', textAlign: 'center' }}>
                 <div style={{ fontFamily: "'Syne',sans-serif", fontSize: '1.8rem', fontWeight: 800, color: '#0f172a' }}>{s.n}</div>
@@ -132,7 +132,7 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '3rem', alignItems: 'center' }}>
           <div ref={aboutRef} className="fade-in" style={{ position: 'relative' }}>
             <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
-              <img src="/joewithmv2.jpg" alt="Josese Sahib" style={{ width: '100%', objectFit: 'cover', display: 'block' }} />
+              <img src={`${import.meta.env.BASE_URL}joewithmv2.jpg`} alt="Josese Sahib" style={{ width: '100%', objectFit: 'cover', display: 'block' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,23,42,0.5) 0%, transparent 60%)' }} />
               <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', right: '1rem' }}>
                 {['IT Consultant','Web Dev','Fiji 🏝'].map(t => (
@@ -183,7 +183,7 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
               Skills & <span className="grad-text">Capabilities</span>
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(380px,1fr))', gap: '3rem' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(380px,100%),1fr))', gap: '3rem' }}>
             <div>{SKILLS.map(s => <SkillBar key={s.label} {...s} />)}</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
               {[
@@ -238,9 +238,9 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '1.5rem' }}>
             {[
-              { title: 'Windows 11 Repair Commands', img: '/windows-repair.png', desc: 'Essential CMD tools: sfc, DISM, chkdsk and more to fix your Windows install.', tag: 'Windows Tips' },
-              { title: 'PC Running Slow?',            img: '/pc-slow.png',       desc: 'Fix the Windows 11 Search Indexer issue causing high CPU and SSD usage.',    tag: 'Troubleshoot' },
-              { title: 'RAMMap by Sysinternals',      img: '/rammap.png',        desc: 'Advanced physical memory analysis utility — identify memory hogs and leaks.', tag: 'Advanced Tools' },
+              { title: 'Windows 11 Repair Commands', img: `${import.meta.env.BASE_URL}windows-repair.png`, desc: 'Essential CMD tools: sfc, DISM, chkdsk and more to fix your Windows install.', tag: 'Windows Tips' },
+              { title: 'PC Running Slow?',            img: `${import.meta.env.BASE_URL}pc-slow.png`,       desc: 'Fix the Windows 11 Search Indexer issue causing high CPU and SSD usage.',    tag: 'Troubleshoot' },
+              { title: 'RAMMap by Sysinternals',      img: `${import.meta.env.BASE_URL}rammap.png`,        desc: 'Advanced physical memory analysis utility — identify memory hogs and leaks.', tag: 'Advanced Tools' },
             ].map(n => (
               <div key={n.title} className="card-3d" style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, overflow: 'hidden', boxShadow: '0 4px 16px rgba(0,0,0,0.06)' }}>
                 <a href={n.img} target="_blank" rel="noopener noreferrer" style={{ display: 'block' }}>

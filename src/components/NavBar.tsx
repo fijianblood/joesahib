@@ -28,7 +28,7 @@ export default function NavBar({ page, onNav }: NavBarProps) {
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'nav-glass' : ''}`}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 1.5rem', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-          <img src="/logo.jpg" alt="LVTS banner" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
+          <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="LVTS banner" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
           <button onClick={() => { onNav('home'); setOpen(false); }} style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', background: 'none', border: 'none', cursor: 'pointer' }}>
             <div className="pulse-ring" style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg,#2563eb,#0891b2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <Zap size={18} color="#fff" fill="#fff" />
