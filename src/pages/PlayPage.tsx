@@ -29,6 +29,8 @@ export default function PlayPage() {
   const [error, setError] = useState<string | undefined>();
   const [solved, setSolved] = useState(false);
   const [showHint, setShowHint] = useState(false);
+  const [hasRun, setHasRun] = useState(false);
+  const [sandboxHasRun, setSandboxHasRun] = useState(false);
 
   const level = WEAVE_CHALLENGES[levelIdx];
   const solvedCount = useMemo(() => Object.values(progress).filter(Boolean).length, [progress]);
@@ -39,12 +41,14 @@ export default function PlayPage() {
     setError(undefined);
     setSolved(false);
     setShowHint(false);
+    setHasRun(false);
   }, [levelIdx]);
 
   function runChallenge() {
     const result = runWeave(code);
     setOutput(result.output);
     setError(result.error);
+    setHasRun(true);
     if (!result.error && outputsMatch(result.output, level.expected)) {
       setSolved(true);
       if (!progress[level.id]) {
@@ -61,6 +65,7 @@ export default function PlayPage() {
     const result = runWeave(sandboxCode);
     setOutput(result.output);
     setError(result.error);
+    setSandboxHasRun(true);
   }
 
   const isUnlocked = (idx: number) => idx === 0 || progress[WEAVE_CHALLENGES[idx - 1].id];
@@ -175,7 +180,7 @@ export default function PlayPage() {
                     style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.6rem 1.3rem', borderRadius: 8, fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
                     <Play size={15} /> Run
                   </button>
-                  <button onClick={() => { setCode(level.starter); setOutput([]); setError(undefined); setSolved(false); }}
+                  <button onClick={() => { setCode(level.starter); setOutput([]); setError(undefined); setSolved(false); setHasRun(false); }}
                     style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', border: '1px solid #e2e8f0', color: '#475569', padding: '0.6rem 1.1rem', borderRadius: 8, fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>
                     <RotateCcw size={14} /> Reset
                   </button>
@@ -207,7 +212,10 @@ export default function PlayPage() {
                 <div style={{ marginTop: '1rem' }}>
                   <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#64748b', marginBottom: '0.4rem' }}>Output</div>
                   <div style={consoleStyle}>
-                    {error ? <span style={{ color: '#f87171' }}>Error: {error}</span> : output.length ? output.join('\n') : <span style={{ color: '#475569' }}>Run your code to see output here…</span>}
+                    {error ? <span style={{ color: '#f87171' }}>Error: {error}</span>
+                      : output.length ? output.join('\n')
+                      : hasRun ? <span style={{ color: '#475569' }}>(no output — your code ran, but nothing called mount() to print anything)</span>
+                      : <span style={{ color: '#475569' }}>Run your code to see output here…</span>}
                   </div>
                 </div>
               </div>
@@ -218,7 +226,7 @@ export default function PlayPage() {
             <div className="card-3d" style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, padding: '1.4rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem' }}>Free Sandbox</div>
-                <button onClick={() => { setSandboxCode(SANDBOX_SAMPLE); setOutput([]); setError(undefined); }}
+                <button onClick={() => { setSandboxCode(SANDBOX_SAMPLE); setOutput([]); setError(undefined); setSandboxHasRun(false); }}
                   style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', border: '1px solid #e2e8f0', color: '#475569', padding: '0.45rem 1rem', borderRadius: 8, fontWeight: 600, fontSize: '0.8rem', cursor: 'pointer' }}>
                   <RotateCcw size={13} /> Reset Sample
                 </button>
@@ -226,7 +234,10 @@ export default function PlayPage() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(320px,100%),1fr))', gap: '1rem' }}>
                 <textarea spellCheck={false} value={sandboxCode} onChange={e => setSandboxCode(e.target.value)} style={{ ...editorStyle, minHeight: 320 }} />
                 <div style={{ ...consoleStyle, maxHeight: 320, minHeight: 320 }}>
-                  {error ? <span style={{ color: '#f87171' }}>Error: {error}</span> : output.length ? output.join('\n') : <span style={{ color: '#475569' }}>Hit Run to see the sample program execute, then edit the code directly — it's a real interpreter.</span>}
+                  {error ? <span style={{ color: '#f87171' }}>Error: {error}</span>
+                    : output.length ? output.join('\n')
+                    : sandboxHasRun ? <span style={{ color: '#475569' }}>(no output — nothing called mount() to print anything)</span>
+                    : <span style={{ color: '#475569' }}>Hit Run to see the sample program execute, then edit the code directly — it's a real interpreter.</span>}
                 </div>
               </div>
               <button onClick={runSandbox}
