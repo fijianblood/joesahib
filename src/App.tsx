@@ -8,8 +8,15 @@ import RangerPage from './pages/RangerPage';
 import ContactPage from './pages/ContactPage';
 import PlayPage from './pages/PlayPage';
 
+const VALID_PAGES = ['home', 'services', 'website', 'ranger', 'play', 'contact'];
+
+function initialPage() {
+  const hash = window.location.hash.replace('#', '');
+  return VALID_PAGES.includes(hash) ? hash : 'home';
+}
+
 export default function App() {
-  const [page, setPage] = useState('home');
+  const [page, setPage] = useState(initialPage);
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [page]);
 
   return (

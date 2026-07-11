@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Zap } from 'lucide-react';
+import { Menu, X, Zap, ExternalLink } from 'lucide-react';
 
 interface NavBarProps {
   page: string;
@@ -14,6 +14,10 @@ const LINKS = [
   { id: 'play', label: '🎮 Play' },
   { id: 'contact', label: 'Contact' },
 ];
+
+function externalHref(id: string) {
+  return `${import.meta.env.BASE_URL}#${id}`;
+}
 
 export default function NavBar({ page, onNav }: NavBarProps) {
   const [scrolled, setScrolled] = useState(false);
@@ -37,8 +41,8 @@ export default function NavBar({ page, onNav }: NavBarProps) {
           </button>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.25rem' }} className="hidden-mobile">
-          {LINKS.map(l => (
+        <div style={{ display: 'flex', gap: '0.25rem', alignItems: 'center' }} className="hidden-mobile">
+          {LINKS.map(l => l.id === 'home' ? (
             <button key={l.id} onClick={() => onNav(l.id)}
               style={{
                 background: page === l.id ? 'rgba(37,99,235,0.08)' : 'none',
@@ -50,13 +54,24 @@ export default function NavBar({ page, onNav }: NavBarProps) {
               }}>
               {l.label}
             </button>
+          ) : (
+            <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', gap: '0.35rem',
+                background: 'none', border: '1px solid transparent',
+                color: '#475569', padding: '0.45rem 1.1rem', borderRadius: 8,
+                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.875rem',
+                cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none',
+              }}>
+              {l.label} <ExternalLink size={12} />
+            </a>
           ))}
-          <button onClick={() => onNav('contact')}
-            style={{ background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.45rem 1.2rem', borderRadius: 8, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', marginLeft: '0.5rem', transition: 'opacity 0.2s' }}
+          <a href={externalHref('contact')} target="_blank" rel="noopener noreferrer"
+            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.45rem 1.2rem', borderRadius: 8, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', marginLeft: '0.5rem', transition: 'opacity 0.2s', textDecoration: 'none' }}
             onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
             onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-            Hire Me
-          </button>
+            Hire Me <ExternalLink size={12} />
+          </a>
         </div>
 
         <button onClick={() => setOpen(!open)} style={{ display: 'none', background: 'none', border: 'none', color: '#0f172a', cursor: 'pointer' }} className="mobile-menu-btn">
@@ -66,11 +81,16 @@ export default function NavBar({ page, onNav }: NavBarProps) {
 
       {open && (
         <div style={{ background: 'rgba(255,255,255,0.98)', borderTop: '1px solid rgba(37,99,235,0.1)', padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.08)' }}>
-          {LINKS.map(l => (
+          {LINKS.map(l => l.id === 'home' ? (
             <button key={l.id} onClick={() => { onNav(l.id); setOpen(false); }}
               style={{ background: 'none', border: 'none', color: page === l.id ? '#2563eb' : '#475569', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '1rem', textAlign: 'left', padding: '0.6rem 0', cursor: 'pointer', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
               {l.label}
             </button>
+          ) : (
+            <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#475569', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '1rem', textAlign: 'left', padding: '0.6rem 0', cursor: 'pointer', borderBottom: '1px solid rgba(0,0,0,0.06)', textDecoration: 'none' }}>
+              {l.label} <ExternalLink size={13} />
+            </a>
           ))}
         </div>
       )}
