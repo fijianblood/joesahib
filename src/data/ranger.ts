@@ -1,0 +1,120 @@
+import type { ServiceRecord, TyreData } from '../types/ranger';
+
+export const STORAGE_KEY = 'rangerDashboardData';
+
+export const DEFAULT_DATA = {
+  currentKm: 40000,
+  totalServices: 3,
+  totalCost: 1234.45,
+  warrantyDate: '2027-04-30',
+  purchasePrice: 78900,
+  loanAmount: 59000,
+  deliveryDate: '2024-04-30',
+};
+
+export const SERVICES: ServiceRecord[] = [
+  {
+    id: 1,
+    number: 'Service 01',
+    km: '10,357 km',
+    day: 30,
+    monthYear: 'October 2024',
+    dow: 'Wednesday',
+    works: [
+      { text: 'Engine oil replaced — 5W30 Pro-Tech' },
+      { text: 'Oil filter replaced (Filter Primary)' },
+      { text: 'All low level fluids checked & topped up' },
+      { text: 'All brakes checked' },
+      { text: 'All lights & wiper blades checked' },
+      { text: 'All tyres & tyre pressure checked' },
+      { text: 'Road test — performance OK' },
+      { text: '⚠ Knocking sound from engine on startup investigated', isWarning: true },
+    ],
+    costs: [
+      { label: 'Labour', value: 'FJD 54.26' },
+      { label: 'Parts', value: 'FJD 24.84' },
+      { label: 'POL (Oil & Materials)', value: 'FJD 199.15' },
+      { label: 'VAT', value: 'FJD 41.73' },
+    ],
+    total: 'FJD 320.00',
+  },
+  {
+    id: 2,
+    number: 'Service 02',
+    km: '19,000 km',
+    day: 28,
+    monthYear: 'May 2025',
+    dow: 'Wednesday',
+    works: [
+      { text: 'Engine oil replaced — 5W30 Pro-Tech' },
+      { text: 'Oil filter replaced (Filter Primary)' },
+      { text: 'Air filter replaced', isNew: true },
+      { text: 'Air con filter replaced', isNew: true },
+      { text: 'All lights & wiper blades checked' },
+      { text: 'All low level fluids checked & topped up' },
+      { text: 'Brakes checked, serviced & adjusted', isNew: true },
+      { text: 'Handbrakes checked & adjusted', isNew: true },
+      { text: 'All tyres & tyre pressure checked' },
+      { text: 'Vehicle washed & vacuumed', isNew: true },
+      { text: 'Road test — performance OK' },
+      { text: '⚠ Tyres inspected for inside cutting', isWarning: true },
+    ],
+    costs: [
+      { label: 'Labour', value: 'FJD 71.52' },
+      { label: 'Parts (3 filters)', value: 'FJD 130.99' },
+      { label: 'POL (Oil & Materials)', value: 'FJD 188.78' },
+      { label: 'VAT', value: 'FJD 58.69' },
+    ],
+    total: 'FJD 450.00',
+  },
+  {
+    id: 3,
+    number: 'Service 03',
+    km: '30,000 km',
+    day: 12,
+    monthYear: 'December 2025',
+    dow: 'Friday',
+    works: [
+      { text: 'Engine oil replaced — 5W30 Pro-Tech' },
+      { text: 'Oil filter replaced (Filter Primary)' },
+      { text: 'Air filter replaced' },
+      { text: 'Air con filter replaced (A/C Fresh)' },
+      { text: 'All lights & wipers checked' },
+      { text: 'All tyres & tyre pressure checked' },
+      { text: 'Brake service carried out' },
+      { text: 'Handbrake adjusted' },
+      { text: 'Low level fluids topped up' },
+      { text: 'Road test carried out — performance OK' },
+    ],
+    costs: [
+      { label: 'Labour', value: 'FJD 114.31' },
+      { label: 'Parts (3 filters)', value: 'FJD 151.00' },
+      { label: 'POL (Oil & Materials)', value: 'FJD 199.15' },
+      { label: 'VAT', value: 'FJD 58.69' },
+    ],
+    total: 'FJD 464.45',
+  },
+];
+
+export const TYRE: TyreData = {
+  spec: '255/70R16',
+  replacedAt: '~19,500 km',
+  kmsOnCurrent: '~20,500 km',
+  remainingEst: 'Est. 30,000–40,000 km remaining',
+  percentUsed: 38,
+  nextRotation: '~29,500 km',
+  note: 'Warranty replacement · Inside cutting',
+};
+
+export const VEHICLE_INFO = [
+  { label: 'Year', value: '2024' },
+  { label: 'Make / Model', value: 'Ford Ranger XL 4×4' },
+  { label: 'Engine', value: '2.0L Turbo Diesel' },
+  { label: 'Transmission', value: '6-Speed Auto' },
+  { label: 'Body', value: 'Twin Cab' },
+  { label: 'Colour', value: 'Arctic White' },
+  { label: 'Chassis', value: 'TRABC240012' },
+  { label: 'Dealer', value: 'Shreedhar Motors Pte Ltd' },
+  { label: 'Dealer Phone', value: '331 3622' },
+  { label: 'Dealer Address', value: '6 Macfarlane Road, Raiwai, Suva' },
+];
