@@ -67,12 +67,6 @@ export default function NavBar({ page, onNav }: NavBarProps) {
               {l.label} <ExternalLink size={12} />
             </a>
           ))}
-          <a href={externalHref('contact')} target="_blank" rel="noopener noreferrer"
-            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.45rem 1.2rem', borderRadius: 8, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '0.875rem', cursor: 'pointer', marginLeft: '0.5rem', transition: 'opacity 0.2s', textDecoration: 'none' }}
-            onMouseEnter={e => (e.currentTarget.style.opacity = '0.85')}
-            onMouseLeave={e => (e.currentTarget.style.opacity = '1')}>
-            Hire Me <ExternalLink size={12} />
-          </a>
         </div>
 
         <button onClick={() => setOpen(!open)} style={{ display: 'none', background: 'none', border: 'none', color: '#0f172a', cursor: 'pointer' }} className="mobile-menu-btn">
