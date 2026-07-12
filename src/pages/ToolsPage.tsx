@@ -201,14 +201,30 @@ export default function ToolsPage() {
 
       if (ios) {
         const blob = doc!.output('blob');
-        const blobUrl = URL.createObjectURL(blob);
-        if (iosTab) {
-          iosTab.location.href = blobUrl;
-          setStatus({ msg: 'Done — opened in a new tab. Tap the Share icon and choose "Save to Files" to download it.', type: 'ok' });
+        const pdfFile = new File([blob], 'converted.pdf', { type: 'application/pdf' });
+        const nav = navigator as Navigator & { canShare?: (data?: ShareData) => boolean; share?: (data: ShareData) => Promise<void> };
+
+        if (nav.canShare && nav.canShare({ files: [pdfFile] }) && nav.share) {
+          // Best path: opens the native iOS share sheet directly — no hunting for a button.
+          iosTab?.close();
+          try {
+            await nav.share({ files: [pdfFile], title: 'converted.pdf' });
+            setStatus({ msg: `Done — ${items.length} image${items.length > 1 ? 's' : ''} converted.`, type: 'ok' });
+          } catch (shareErr) {
+            if ((shareErr as Error)?.name === 'AbortError') {
+              setStatus({ msg: 'Cancelled.', type: '' });
+            } else {
+              throw shareErr;
+            }
+          }
         } else {
-          // Popup was blocked even for the blank tab — fall back to opening in this tab.
-          window.location.href = blobUrl;
-          setStatus({ msg: 'Done — tap the Share icon and choose "Save to Files" to download it.', type: 'ok' });
+          const blobUrl = URL.createObjectURL(blob);
+          if (iosTab) {
+            iosTab.location.href = blobUrl;
+          } else {
+            window.location.href = blobUrl;
+          }
+          setStatus({ msg: 'Done — opened in a new tab. If you don\'t see a toolbar, tap once near the top or bottom of the screen, then look for the Share icon (a square with an arrow) to save it.', type: 'ok' });
         }
       } else {
         doc!.save('converted.pdf');
