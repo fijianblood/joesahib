@@ -151,6 +151,21 @@ export default function RangerPage() {
         </div>
       </div>
 
+      {/* YOUTUBE SHORTS EMBED */}
+      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '1.5rem 1.5rem 0' }}>
+        <div style={{ maxWidth: 360, margin: '0 auto', borderRadius: 12, overflow: 'hidden', border: '1px solid #1e3355', boxShadow: '0 8px 30px rgba(0,0,0,0.4)' }}>
+          <div style={{ position: 'relative', paddingBottom: '177.78%', height: 0 }}>
+            <iframe
+              src="https://www.youtube.com/embed/jphOMn-m5Os"
+              style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+              title="Ford Ranger XL 4x4 2024 — Personal Service Log"
+            />
+          </div>
+        </div>
+      </div>
+
       {/* ════════════════════════════════════════════════════════════════════ */}
       {/* EDIT VIEW */}
       {/* ════════════════════════════════════════════════════════════════════ */}
