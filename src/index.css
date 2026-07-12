@@ -84,6 +84,14 @@ body {
 }
 .pulse-ring { animation: pulse-ring 2.5s infinite; }
 
+/* CTA button pulse (green) */
+@keyframes pulse-cta {
+  0%   { box-shadow: 0 0 0 0 rgba(22,163,74,0.45); }
+  70%  { box-shadow: 0 0 0 12px rgba(22,163,74,0); }
+  100% { box-shadow: 0 0 0 0 rgba(22,163,74,0); }
+}
+.pulse-cta { animation: pulse-cta 2.2s infinite; }
+
 /* Typing cursor */
 @keyframes blink { 50% { opacity: 0; } }
 .cursor::after {

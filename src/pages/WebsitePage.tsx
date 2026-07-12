@@ -192,9 +192,12 @@ export default function WebsitePage({ onNav }: { onNav: (p: string) => void }) {
                 onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}>
                 Let's Discuss →
               </button>
-              <a href="https://linktr.ee/sahibjoe" target="_blank" rel="noopener noreferrer"
-                style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', border: '1px solid #e2e8f0', color: '#334155', padding: '0.85rem 1.4rem', borderRadius: 10, fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
-                <Globe size={16}/> LvTS Reference <ExternalLink size={13}/>
+              <a href="https://www.vitikart.com.fj/914-website-design-development-fiji-we-make-websites" target="_blank" rel="noopener noreferrer"
+                className="pulse-cta"
+                style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(135deg,#16a34a,#0891b2)', border: 'none', color: '#fff', padding: '0.85rem 1.6rem', borderRadius: 10, fontWeight: 800, fontSize: '0.9rem', textDecoration: 'none', boxShadow: '0 4px 20px rgba(22,163,74,0.35)', transition: 'transform 0.2s' }}
+                onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)')}
+                onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0) scale(1)')}>
+                <ShoppingCart size={16}/> Buy Your Website NOW <ExternalLink size={13}/>
               </a>
             </div>
           </div>
