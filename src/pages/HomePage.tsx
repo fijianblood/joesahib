@@ -78,10 +78,14 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
         <div className="orb" style={{ width: 200, height: 200, background: 'rgba(8,145,178,0.06)', top: '40%', right: '15%', animationDelay: '1.5s' }} />
 
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 820, textAlign: 'center' }}>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)', borderRadius: 9999, padding: '0.35rem 1rem', marginBottom: '1.8rem' }}>
-            <div style={{ width: 7, height: 7, borderRadius: '50%', background: '#0891b2' }} />
+          <a href="https://www.vitikart.com.fj/914-remote-it-service" target="_blank" rel="noopener noreferrer"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(37,99,235,0.08)', border: '1px solid rgba(37,99,235,0.2)', borderRadius: 9999, padding: '0.35rem 1rem', marginBottom: '1.8rem', textDecoration: 'none', cursor: 'pointer', transition: 'background 0.2s, border-color 0.2s' }}
+            onMouseEnter={e => { e.currentTarget.style.background = 'rgba(37,99,235,0.14)'; e.currentTarget.style.borderColor = 'rgba(37,99,235,0.35)'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(37,99,235,0.08)'; e.currentTarget.style.borderColor = 'rgba(37,99,235,0.2)'; }}>
+            <div className="pulse-ring" style={{ width: 7, height: 7, borderRadius: '50%', background: '#0891b2' }} />
             <span style={{ fontSize: '0.75rem', fontWeight: 600, letterSpacing: '0.1em', textTransform: 'uppercase', color: '#0891b2' }}>Available for Hire · Raiwai, Suva, Fiji</span>
-          </div>
+            <ExternalLink size={11} color="#0891b2" />
+          </a>
 
           <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
             <h1 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(2.8rem,9vw,6rem)', lineHeight: 1.0, color: '#0f172a', letterSpacing: '-0.02em' }}>
