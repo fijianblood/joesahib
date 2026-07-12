@@ -33,6 +33,11 @@ function isDng(file: File): boolean {
   return /adobe-dng|x-dng/i.test(file.type) || /\.dng$/i.test(file.name);
 }
 
+function isIOS(): boolean {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+
 function loadImageDims(url: string): Promise<{ w: number; h: number }> {
   return new Promise((resolve, reject) => {
     const img = new window.Image();
@@ -145,6 +150,13 @@ export default function ToolsPage() {
 
   async function convert() {
     if (!items.length) return;
+
+    // iOS Safari doesn't support jsPDF's auto-download — it either silently fails or gets
+    // blocked as a popup if opened after the async work below. Open a blank tab now, while
+    // we're still inside the click's trusted user-gesture window, then fill it in once ready.
+    const ios = isIOS();
+    const iosTab = ios ? window.open('', '_blank') : null;
+
     setConverting(true);
     setStatus({ msg: 'Converting…', type: '' });
 
@@ -187,10 +199,24 @@ export default function ToolsPage() {
         doc!.addImage(dataUrl, 'JPEG', x, y, drawW, drawH);
       }
 
-      doc!.save('converted.pdf');
-      setStatus({ msg: `Done — ${items.length} image${items.length > 1 ? 's' : ''} converted.`, type: 'ok' });
+      if (ios) {
+        const blob = doc!.output('blob');
+        const blobUrl = URL.createObjectURL(blob);
+        if (iosTab) {
+          iosTab.location.href = blobUrl;
+          setStatus({ msg: 'Done — opened in a new tab. Tap the Share icon and choose "Save to Files" to download it.', type: 'ok' });
+        } else {
+          // Popup was blocked even for the blank tab — fall back to opening in this tab.
+          window.location.href = blobUrl;
+          setStatus({ msg: 'Done — tap the Share icon and choose "Save to Files" to download it.', type: 'ok' });
+        }
+      } else {
+        doc!.save('converted.pdf');
+        setStatus({ msg: `Done — ${items.length} image${items.length > 1 ? 's' : ''} converted.`, type: 'ok' });
+      }
     } catch (err) {
       console.error(err);
+      iosTab?.close();
       setStatus({ msg: 'Something went wrong converting these images. Try again or use fewer files at once.', type: 'err' });
     } finally {
       setConverting(false);
