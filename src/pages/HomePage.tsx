@@ -109,7 +109,7 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.8rem 1.8rem', borderRadius: 10, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', marginBottom: '1.8rem', transition: 'transform 0.2s' }}
             onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)')}
             onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0) scale(1)')}>
-            <Rocket size={17}/> Book Me — Learn to Build Websites <ExternalLink size={13}/>
+            <Rocket size={17}/> Buy Your Own Website Today —  <ExternalLink size={13}/>
           </a>
 
           <p style={{ fontSize: 'clamp(0.9rem,1.8vw,1rem)', color: '#64748b', lineHeight: 1.85, maxWidth: 640, margin: '0 auto 2.5rem' }}>
