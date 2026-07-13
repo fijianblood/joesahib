@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useScrollFade } from '../hooks/useScrollFade';
-import { ExternalLink, Award, Code2, Cpu, Globe } from 'lucide-react';
+import { ExternalLink, Award, Code2, Cpu, Globe, Rocket, GraduationCap } from 'lucide-react';
 
 const TITLES = ['IT Sales Pro', 'Web Dev Enthusiast', 'PC & Laptop Repair', 'Fiji 🏝 Tech Builder', 'Laptops for sale', 'PC & Laptop Repair'];
 
@@ -100,8 +100,31 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
 
           <div style={{ marginBottom: '2rem', minHeight: '2.4rem' }}><TypeWriter /></div>
 
-          <p style={{ fontSize: 'clamp(0.95rem,2vw,1.1rem)', color: '#64748b', lineHeight: 1.75, maxWidth: 580, margin: '0 auto 2.5rem' }}>
-           10+years in IT pre-sales consulting for government & SMEs across Fiji. Building digital products, fixing hardware, and deploying the web — one island at a time.
+          <p style={{ fontSize: 'clamp(0.95rem,2vw,1.1rem)', color: '#64748b', lineHeight: 1.75, maxWidth: 640, margin: '0 auto 1.5rem' }}>
+            Node.js isn't as scary as it sounds — think of it like Windows 11, just another environment your computer runs on. I combine <strong style={{ color: '#339933' }}>Node.js</strong>, <strong style={{ color: '#7c3aed' }}>Claude AI</strong>, and <strong style={{ color: '#0f172a' }}>VS Code</strong> to build and sell real websites for clients across Fiji. Book me and I'll walk you through the unseen world inside your own computer.
+          </p>
+
+          <a href="https://www.vitikart.com.fj/914-website-design-development-fiji-we-make-websites" target="_blank" rel="noopener noreferrer"
+            className="pulse-cta"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.8rem 1.8rem', borderRadius: 10, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 800, fontSize: '0.95rem', textDecoration: 'none', marginBottom: '1.8rem', transition: 'transform 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)')}
+            onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0) scale(1)')}>
+            <Rocket size={17}/> Book Me — Learn to Build Websites <ExternalLink size={13}/>
+          </a>
+
+          <p style={{ fontSize: 'clamp(0.9rem,1.8vw,1rem)', color: '#64748b', lineHeight: 1.85, maxWidth: 640, margin: '0 auto 2.5rem' }}>
+            Think ChatGPT or another AI can build your website on its own? First question:{' '}
+            do you have{' '}
+            <a href="https://nodejs.org/en" target="_blank" rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(51,153,51,0.1)', border: '1px solid rgba(51,153,51,0.35)', color: '#2d7a2d', padding: '0.1rem 0.6rem', borderRadius: 6, fontWeight: 700, fontSize: '0.9em', textDecoration: 'none', verticalAlign: 'middle' }}>
+              Node.js <ExternalLink size={11}/>
+            </a>{' '}
+            installed on your laptop? If not,{' '}
+            <a href="https://www.vitikart.com.fj/914-remote-it-service" target="_blank" rel="noopener noreferrer"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', color: '#2563eb', fontWeight: 700, textDecoration: 'underline', verticalAlign: 'middle' }}>
+              <GraduationCap size={14}/> click here to book your training schedule
+            </a>{' '}
+            — you'll get a clear picture of exactly which tools AI uses to build a website, and unlike a site built for you, those tools and skills stay with you on your own computer, forever.
           </p>
 
           <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
