@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import type { jsPDF as JsPDFCtor } from 'jspdf';
-import { UploadCloud, ArrowUp, ArrowDown, X, FileDown, Loader2, CheckCircle2, AlertCircle, Shield } from 'lucide-react';
+import { UploadCloud, ArrowUp, ArrowDown, X, FileDown, Loader2, CheckCircle2, AlertCircle, Shield, Layers, FileText } from 'lucide-react';
 import { useScrollFade } from '../hooks/useScrollFade';
 import { extractJpegCandidates } from '../lib/rawPreview';
 
@@ -23,6 +23,15 @@ function formatSize(bytes: number) {
 function isSupportedFile(file: File): boolean {
   if (file.type.startsWith('image/')) return true;
   return /\.(heic|heif|dng)$/i.test(file.name);
+}
+
+interface PdfItem {
+  id: number;
+  file: File;
+}
+
+function isPdfFile(file: File): boolean {
+  return file.type === 'application/pdf' || /\.pdf$/i.test(file.name);
 }
 
 function isHeic(file: File): boolean {
@@ -113,6 +122,12 @@ export default function ToolsPage() {
   const [quality, setQuality] = useState(85);
   const [converting, setConverting] = useState(false);
   const [status, setStatus] = useState<{ msg: string; type: 'ok' | 'err' | '' }>({ msg: '', type: '' });
+
+  const pdfInputRef = useRef<HTMLInputElement>(null);
+  const [pdfItems, setPdfItems] = useState<PdfItem[]>([]);
+  const [pdfDragActive, setPdfDragActive] = useState(false);
+  const [merging, setMerging] = useState(false);
+  const [mergeStatus, setMergeStatus] = useState<{ msg: string; type: 'ok' | 'err' | '' }>({ msg: '', type: '' });
 
   function handleFiles(fileList: FileList | null) {
     if (!fileList) return;
@@ -239,6 +254,99 @@ export default function ToolsPage() {
     }
   }
 
+  function handlePdfFiles(fileList: FileList | null) {
+    if (!fileList) return;
+    const files = Array.from(fileList).filter(isPdfFile);
+    if (!files.length) {
+      setMergeStatus({ msg: 'No valid PDF files found.', type: 'err' });
+      return;
+    }
+    setPdfItems(prev => [...prev, ...files.map(file => ({ id: idCounter++, file }))]);
+    setMergeStatus({ msg: '', type: '' });
+  }
+
+  function removePdfItem(id: number) {
+    setPdfItems(prev => prev.filter(i => i.id !== id));
+  }
+
+  function movePdfItem(id: number, dir: number) {
+    setPdfItems(prev => {
+      const idx = prev.findIndex(i => i.id === id);
+      const newIdx = idx + dir;
+      if (newIdx < 0 || newIdx >= prev.length) return prev;
+      const next = [...prev];
+      [next[idx], next[newIdx]] = [next[newIdx], next[idx]];
+      return next;
+    });
+  }
+
+  async function mergePdfs() {
+    if (pdfItems.length < 2) return;
+
+    const ios = isIOS();
+    const iosTab = ios ? window.open('', '_blank') : null;
+
+    setMerging(true);
+    setMergeStatus({ msg: 'Merging…', type: '' });
+
+    try {
+      const { PDFDocument } = await import('pdf-lib');
+      const mergedPdf = await PDFDocument.create();
+
+      for (let i = 0; i < pdfItems.length; i++) {
+        setMergeStatus({ msg: `Merging file ${i + 1} of ${pdfItems.length}…`, type: '' });
+        const bytes = await pdfItems[i].file.arrayBuffer();
+        const srcDoc = await PDFDocument.load(bytes);
+        const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+        copiedPages.forEach(page => mergedPdf.addPage(page));
+      }
+
+      const mergedBytes = await mergedPdf.save();
+      const blob = new Blob([mergedBytes as BlobPart], { type: 'application/pdf' });
+
+      if (ios) {
+        const pdfFile = new File([blob], 'merged.pdf', { type: 'application/pdf' });
+        const nav = navigator as Navigator & { canShare?: (data?: ShareData) => boolean; share?: (data: ShareData) => Promise<void> };
+
+        if (nav.canShare && nav.canShare({ files: [pdfFile] }) && nav.share) {
+          iosTab?.close();
+          try {
+            await nav.share({ files: [pdfFile], title: 'merged.pdf' });
+            setMergeStatus({ msg: `Done — ${pdfItems.length} PDFs merged.`, type: 'ok' });
+          } catch (shareErr) {
+            if ((shareErr as Error)?.name === 'AbortError') {
+              setMergeStatus({ msg: 'Cancelled.', type: '' });
+            } else {
+              throw shareErr;
+            }
+          }
+        } else {
+          const blobUrl = URL.createObjectURL(blob);
+          if (iosTab) {
+            iosTab.location.href = blobUrl;
+          } else {
+            window.location.href = blobUrl;
+          }
+          setMergeStatus({ msg: 'Done — opened in a new tab. If you don\'t see a toolbar, tap once near the top or bottom of the screen, then look for the Share icon (a square with an arrow) to save it.', type: 'ok' });
+        }
+      } else {
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = 'merged.pdf';
+        a.click();
+        URL.revokeObjectURL(blobUrl);
+        setMergeStatus({ msg: `Done — ${pdfItems.length} PDFs merged into one file.`, type: 'ok' });
+      }
+    } catch (err) {
+      console.error(err);
+      iosTab?.close();
+      setMergeStatus({ msg: "Something went wrong merging these PDFs. Make sure none of them are password-protected or corrupted.", type: 'err' });
+    } finally {
+      setMerging(false);
+    }
+  }
+
   const selectStyle: React.CSSProperties = {
     width: '100%', background: '#f8fafc', border: '1px solid #e2e8f0', color: '#0f172a',
     padding: '0.6rem 0.75rem', borderRadius: 8, fontSize: '0.875rem', fontFamily: "'Space Grotesk',sans-serif",
@@ -356,8 +464,92 @@ export default function ToolsPage() {
             )}
           </div>
 
+          <div style={{ marginTop: '3.5rem', marginBottom: '1.5rem', textAlign: 'center' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563eb', marginBottom: '0.75rem' }}>
+              <Shield size={14} /> Free Tool
+            </div>
+            <h2 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(1.6rem,4vw,2.4rem)', color: '#0f172a', lineHeight: 1.15, marginBottom: '0.75rem' }}>
+              Merge <span className="grad-text">PDF Files</span>
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.7 }}>
+              Combine two or more PDFs into a single file, in whatever order you choose. Runs entirely in your browser — nothing is ever uploaded.
+            </p>
+          </div>
+
+          <div className="card-3d" style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 16, padding: '1.8rem', boxShadow: '0 8px 40px rgba(0,0,0,0.06)' }}>
+            <div
+              onClick={() => pdfInputRef.current?.click()}
+              onDragEnter={e => { e.preventDefault(); setPdfDragActive(true); }}
+              onDragOver={e => { e.preventDefault(); setPdfDragActive(true); }}
+              onDragLeave={e => { e.preventDefault(); setPdfDragActive(false); }}
+              onDrop={e => { e.preventDefault(); setPdfDragActive(false); handlePdfFiles(e.dataTransfer.files); }}
+              style={{
+                border: `2px dashed ${pdfDragActive ? '#2563eb' : '#e2e8f0'}`,
+                background: pdfDragActive ? 'rgba(37,99,235,0.05)' : '#f8fafc',
+                borderRadius: 12, padding: '2.5rem 1.5rem', textAlign: 'center', cursor: 'pointer', transition: 'all 0.15s ease',
+              }}>
+              <UploadCloud size={32} color="#2563eb" style={{ marginBottom: '0.75rem' }} />
+              <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1rem', marginBottom: '0.3rem' }}>Click to choose PDFs, or drag them here</div>
+              <div style={{ fontSize: '0.8rem', color: '#64748b' }}>Add 2 or more PDF files — arrange the order below</div>
+            </div>
+            <input ref={pdfInputRef} type="file" accept="application/pdf,.pdf" multiple style={{ display: 'none' }}
+              onChange={e => { handlePdfFiles(e.target.files); e.target.value = ''; }} />
+
+            {pdfItems.length > 0 && (
+              <div style={{ marginTop: '1.2rem', display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                {pdfItems.map((item, idx) => (
+                  <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: '0.5rem 0.7rem' }}>
+                    <div style={{ width: 44, height: 44, borderRadius: 6, flexShrink: 0, background: '#e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <FileText size={20} color="#2563eb" />
+                    </div>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f172a', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{idx + 1}. {item.file.name}</div>
+                      <div style={{ fontSize: '0.7rem', color: '#94a3b8', fontFamily: "'JetBrains Mono',monospace" }}>{formatSize(item.file.size)}</div>
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.3rem' }}>
+                      <button onClick={() => movePdfItem(item.id, -1)} title="Move up"
+                        style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid #e2e8f0', background: '#fff', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <ArrowUp size={14} />
+                      </button>
+                      <button onClick={() => movePdfItem(item.id, 1)} title="Move down"
+                        style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid #e2e8f0', background: '#fff', color: '#64748b', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <ArrowDown size={14} />
+                      </button>
+                      <button onClick={() => removePdfItem(item.id)} title="Remove"
+                        style={{ width: 28, height: 28, borderRadius: 6, border: '1px solid #e2e8f0', background: '#fff', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <X size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button onClick={mergePdfs} disabled={pdfItems.length < 2 || merging}
+              style={{
+                marginTop: '1.4rem', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem',
+                background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.9rem', borderRadius: 10,
+                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '0.95rem',
+                cursor: pdfItems.length < 2 || merging ? 'not-allowed' : 'pointer', opacity: pdfItems.length < 2 || merging ? 0.5 : 1,
+              }}>
+              {merging ? <><Loader2 size={18} className="animate-spin" /> Merging…</> : <><Layers size={18} /> Merge PDFs</>}
+            </button>
+
+            {pdfItems.length === 1 && (
+              <div style={{ marginTop: '0.7rem', textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8' }}>Add at least one more PDF to merge.</div>
+            )}
+
+            {mergeStatus.msg && (
+              <div style={{ marginTop: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', fontSize: '0.8rem', color: mergeStatus.type === 'ok' ? '#16a34a' : mergeStatus.type === 'err' ? '#ef4444' : '#64748b' }}>
+                {mergeStatus.type === 'ok' && <CheckCircle2 size={15} />}
+                {mergeStatus.type === 'err' && <AlertCircle size={15} />}
+                {mergeStatus.msg}
+              </div>
+            )}
+          </div>
+
           <div style={{ marginTop: '1.5rem', textAlign: 'center', fontSize: '0.75rem', color: '#94a3b8', lineHeight: 1.7 }}>
-            🔒 Runs 100% locally in your browser — your images never leave your device.<br />
+            🔒 Runs 100% locally in your browser — your files never leave your device.<br />
             Brought to you free by <span style={{ fontWeight: 700, color: '#2563eb' }}>LomaVata Tech Services</span>.
           </div>
         </div>
