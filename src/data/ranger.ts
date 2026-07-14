@@ -134,9 +134,9 @@ export const VEHICLE_INFO = [
   { label: 'Engine', value: '2.0L Turbo Diesel' },
   { label: 'Transmission', value: '6-Speed Auto' },
   { label: 'Body', value: 'Twin Cab' },
-  { label: 'Colour', value: 'Arctic White' },
+  { label: 'Colour', value: 'Black' },
   { label: 'Chassis', value: 'TRABC240012' },
-  { label: 'Dealer', value: 'Shreedhar Motors Pte Ltd' },
-  { label: 'Dealer Phone', value: '331 3622' },
-  { label: 'Dealer Address', value: '6 Macfarlane Road, Raiwai, Suva' },
+  { label: 'Dealer', value: 'GMH Autos' },
+  { label: 'Dealer Phone', value: '702 6945' },
+  { label: 'Dealer Address', value: '144 Ratu Mara Road, Samabula, Suva' },
 ];

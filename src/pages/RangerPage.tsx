@@ -260,8 +260,10 @@ export default function RangerPage() {
                     : <span style={{ fontSize: '0.9rem', color: '#f59e0b', marginLeft: '0.7rem' }}>— {formatNum(kmToNext)} km to go</span>
                   }
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#8b9ab0', marginTop: '0.2rem' }}>
-                  Current: {formatNum(data.currentKm)} km · Book at Shreedhar Motors · Ph: 331 3622
+                <div style={{ fontSize: '0.78rem', color: '#8b9ab0', marginTop: '0.2rem', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '0.4rem' }}>
+                  <span>Current: {formatNum(data.currentKm)} km · Book at</span>
+                  <img src={`${import.meta.env.BASE_URL}gmh-autos-logo.jpg`} alt="GMH Autos" style={{ height: 16, width: 16, borderRadius: 4, objectFit: 'cover' }} />
+                  <span>GMH Autos · Ph: 702 6945</span>
                 </div>
               </div>
             </div>
@@ -345,7 +347,7 @@ export default function RangerPage() {
 
           {/* Footer */}
           <div style={{ textAlign: 'center', padding: '1.5rem', color: '#334155', fontSize: '0.68rem', letterSpacing: 1, borderTop: '1px solid #1e3355' }}>
-            Ford Ranger XL 4×4 · Chassis TRABC240012 · Shreedhar Motors Pte Limited, Suva, Fiji
+            Ford Ranger XL 4×4 · Chassis TRABC240012 · GMH Autos, Samabula, Suva, Fiji
           </div>
         </div>
       )}

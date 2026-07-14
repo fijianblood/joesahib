@@ -491,7 +491,7 @@ export default function WebsitePage({ onNav }: { onNav: (p: string) => void }) {
 
         {/* Chassis info */}
         <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid #1e3355', fontSize: '0.7rem', color: '#334155', letterSpacing: '0.05em' }}>
-          Chassis TRABC240012 · Shreedhar Motors, Suva, Fiji
+          Chassis TRABC240012 · GMH Autos, Samabula, Suva, Fiji
         </div>
       </div>
 
