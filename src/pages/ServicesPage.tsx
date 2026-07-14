@@ -1,5 +1,5 @@
 import { useScrollFade } from '../hooks/useScrollFade';
-import { Monitor, Wrench, Wifi, ShieldCheck, Globe, Printer } from 'lucide-react';
+import { Monitor, Wrench, Wifi, ShieldCheck, Globe, Printer, Rss, ExternalLink } from 'lucide-react';
 
 const SERVICES = [
   {
@@ -41,6 +41,7 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
   const heroRef = useScrollFade();
   const extraRef = useScrollFade();
   const flyerRef = useScrollFade();
+  const fbRef = useScrollFade();
 
   return (
     <>
@@ -156,6 +157,31 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FACEBOOK LIVE FEED */}
+      <section style={{ padding: '80px 1.5rem', background: '#f8fafc' }}>
+        <div ref={fbRef} className="fade-in" style={{ maxWidth: 700, margin: '0 auto', textAlign: 'center', marginBottom: '2.5rem' }}>
+          <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563eb', marginBottom: '0.5rem' }}>Stay In The Loop</div>
+          <h2 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '2rem', color: '#0f172a', marginBottom: '0.75rem' }}>Latest From Facebook</h2>
+          <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.7 }}>
+            This feed updates automatically whenever we post — repair tips, new stock, and behind-the-scenes, straight from our Facebook page.
+          </p>
+        </div>
+        <div style={{ maxWidth: 560, margin: '0 auto' }}>
+          <div className="card-3d" style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 8px 30px rgba(0,0,0,0.06)' }}>
+            <iframe
+              src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2Flvtsfiji&tabs=timeline&width=560&height=700&small_header=false&adapt_container_width=true&hide_cover=false&show_facepile=true"
+              width="100%" height="700" style={{ border: 'none', display: 'block', overflow: 'hidden' }}
+              allow="encrypted-media" loading="lazy"
+              title="LomaVata Tech Services Facebook Page"
+            />
+          </div>
+          <a href="https://www.facebook.com/lvtsfiji" target="_blank" rel="noopener noreferrer"
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginTop: '1rem', color: '#2563eb', fontWeight: 600, fontSize: '0.875rem', textDecoration: 'none' }}>
+            <Rss size={15} /> Follow @lvtsfiji on Facebook <ExternalLink size={12} />
+          </a>
         </div>
       </section>
     </>
