@@ -3,9 +3,9 @@ import type { ServiceRecord, TyreData } from '../types/ranger';
 export const STORAGE_KEY = 'rangerDashboardData';
 
 export const DEFAULT_DATA = {
-  currentKm: 40000,
-  totalServices: 3,
-  totalCost: 1234.45,
+  currentKm: 41237,
+  totalServices: 4,
+  totalCost: 1629.45,
   warrantyDate: '2027-04-30',
   purchasePrice: 78900,
   loanAmount: 59000,
@@ -93,6 +93,28 @@ export const SERVICES: ServiceRecord[] = [
       { label: 'VAT', value: 'FJD 58.69' },
     ],
     total: 'FJD 464.45',
+  },
+  {
+    id: 4,
+    number: 'Service 04',
+    km: '41,237 km',
+    day: 14,
+    monthYear: 'July 2026',
+    dow: 'Tuesday',
+    works: [
+      { text: 'Engine oil replaced' },
+      { text: 'Oil filter replaced' },
+      { text: 'Air filter replaced' },
+      { text: 'Fuel filter replaced', isNew: true },
+      { text: 'All fluids topped up — general 40-point check-up' },
+      { text: 'All 4 wheel brakes checked & serviced' },
+      { text: 'General safety check-up, lubrication & greasing' },
+      { text: '⚠ AC filter recommended for next service', isWarning: true },
+    ],
+    costs: [
+      { label: 'Service Total (GMH Autos)', value: 'FJD 395.00' },
+    ],
+    total: 'FJD 395.00',
   },
 ];
 
