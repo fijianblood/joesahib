@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import type { DashboardData } from '../types/ranger';
 import { STORAGE_KEY, DEFAULT_DATA, SERVICES, TYRE, VEHICLE_INFO } from '../data/ranger';
 import { formatNum, daysBetween, formatDateLong } from '../utils/ranger';
-import { Save, Edit3, Eye, CheckCircle, AlertTriangle, RotateCcw } from 'lucide-react';
+import { Save, Edit3, Eye, CheckCircle, AlertTriangle, RotateCcw, DollarSign, ArrowRight } from 'lucide-react';
 
 // ─── localStorage helpers ────────────────────────────────────────────────────
 
@@ -149,6 +149,35 @@ export default function RangerPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* PRICING PITCH BANNER */}
+      <div style={{ maxWidth: 1400, margin: '0 auto', padding: '1.5rem 1.5rem 0' }}>
+        <a
+          href="https://www.vitikart.com.fj/914-website-design-development-fiji-we-make-websites"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ textDecoration: 'none', display: 'block' }}
+        >
+          <div style={{ background: 'linear-gradient(135deg,rgba(16,185,129,0.12),rgba(245,158,11,0.06))', border: '1px solid #10b981', borderRadius: 10, padding: '1rem 1.3rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '1rem', flexWrap: 'wrap', cursor: 'pointer' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
+              <div style={{ background: 'rgba(16,185,129,0.15)', border: '1px solid #10b981', borderRadius: 8, width: 38, height: 38, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <DollarSign size={19} color="#10b981" />
+              </div>
+              <div>
+                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '0.9rem', color: '#fff' }}>
+                  Like this dashboard? It's yours from <span style={{ color: '#10b981' }}>$5/month</span> — less than $1 a day.
+                </div>
+                <div style={{ fontSize: '0.75rem', color: '#8b9ab0', marginTop: '0.15rem' }}>
+                  That's the whole cost to design, host & keep a website like this one live — and it grows with you.
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#10b981', fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: 1, flexShrink: 0 }}>
+              Get Yours <ArrowRight size={15} />
+            </div>
+          </div>
+        </a>
       </div>
 
       {/* YOUTUBE SHORTS EMBED */}
