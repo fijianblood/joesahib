@@ -238,7 +238,12 @@ export default function RangerPage() {
             {VEHICLE_INFO.map(item => (
               <div key={item.label} style={{ background: '#0b1a30', border: '1px solid #1e3355', borderRadius: 8, padding: '0.8rem 1rem' }}>
                 <div style={{ fontSize: '0.58rem', letterSpacing: 2, textTransform: 'uppercase', color: '#8b9ab0', marginBottom: '0.25rem' }}>{item.label}</div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 500, color: '#e2e8f0' }}>{item.value}</div>
+                <div style={{ fontSize: '0.85rem', fontWeight: 500, color: '#e2e8f0', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  {item.label === 'Dealer' && (
+                    <img src={`${import.meta.env.BASE_URL}gmh-autos-logo.jpg`} alt="GMH Autos" style={{ height: 20, width: 20, borderRadius: 4, objectFit: 'cover', flexShrink: 0 }} />
+                  )}
+                  {item.value}
+                </div>
               </div>
             ))}
           </div>
