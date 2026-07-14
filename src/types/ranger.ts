@@ -4,7 +4,6 @@ export interface DashboardData {
   totalCost: number;
   warrantyDate: string;
   purchasePrice: number;
-  loanAmount: number;
   deliveryDate: string;
 }
 

@@ -8,7 +8,6 @@ export const DEFAULT_DATA = {
   totalCost: 1629.45,
   warrantyDate: '2027-04-30',
   purchasePrice: 78900,
-  loanAmount: 59000,
   deliveryDate: '2024-04-30',
 };
 

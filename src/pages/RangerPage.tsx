@@ -179,7 +179,6 @@ export default function RangerPage() {
               { label: 'Odometer', value: formatNum(data.currentKm) + ' km', accent: '#f59e0b' },
               { label: 'Services', value: String(data.totalServices), accent: '#3b82f6' },
               { label: 'Service Cost', value: 'FJD ' + formatNum(data.totalCost), accent: '#10b981' },
-              { label: 'Loan Balance', value: 'FJD ' + formatNum(data.loanAmount), accent: '#ef4444' },
               { label: 'Days Owned', value: daysBetween(String(data.deliveryDate)) + ' days', accent: '#2dd4bf' },
               { label: 'Warranty', value: formatDateLong(data.warrantyDate), accent: '#a78bfa' },
             ].map(s => <StatCard key={s.label} label={s.label} value={s.value} accent={s.accent} />)}
@@ -199,7 +198,6 @@ export default function RangerPage() {
             <div style={{ background: '#0d1f3c', border: '1px solid #1e3355', borderRadius: 12, padding: '1.5rem' }}>
               <div style={{ color: '#ef4444', fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '0.8rem', letterSpacing: 2, textTransform: 'uppercase', marginBottom: '1.2rem' }}>Financial</div>
               <EditField label="Purchase Price (FJD)" field="purchasePrice" value={data.purchasePrice} onChange={update} />
-              <EditField label="Current Loan Amount (FJD)" field="loanAmount" value={data.loanAmount} onChange={update} />
             </div>
 
             {/* Dates */}
@@ -231,7 +229,6 @@ export default function RangerPage() {
             <StatCard label="Days Owned"    value={String(days)}                          sub={`Since ${formatDateLong(data.deliveryDate)}`} accent="#2dd4bf" />
             <StatCard label="Service Cost"  value={`FJD ${formatNum(data.totalCost)}`}   accent="#10b981" />
             <StatCard label="Purchase Price" value={`FJD ${formatNum(data.purchasePrice)}`} accent="#a78bfa" />
-            <StatCard label="Loan Balance"  value={`FJD ${formatNum(data.loanAmount)}`}  accent="#ef4444" />
             <StatCard label="Warranty Exp"  value={formatDateLong(data.warrantyDate)}     accent="#f59e0b" />
           </div>
 
