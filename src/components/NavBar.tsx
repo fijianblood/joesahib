@@ -1,4 +1,5 @@
 import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Wrench, Globe, Box, Car, Gamepad2, Hammer, MessageCircle, Mail } from 'lucide-react';
 
 interface NavBarProps {
@@ -80,14 +81,16 @@ export default function NavBar({ page, onNav }: NavBarProps) {
             </div>
           );
           return l.id === 'home' ? (
-            <button key={l.id} onClick={() => onNav('home')} aria-label="Home"
+            <motion.button key={l.id} onClick={() => onNav('home')} aria-label="Home"
+              whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 500, damping: 25 }}
               style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
               {tile}
-            </button>
+            </motion.button>
           ) : (
-            <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer" aria-label={l.label}>
+            <motion.a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer" aria-label={l.label}
+              whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 500, damping: 25 }}>
               {tile}
-            </a>
+            </motion.a>
           );
         })}
       </div>
