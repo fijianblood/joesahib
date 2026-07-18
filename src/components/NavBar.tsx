@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Menu, X, ExternalLink } from 'lucide-react';
+import { useRef } from 'react';
+import { Wrench, Globe, Box, Car, Gamepad2, Hammer, MessageCircle, Mail } from 'lucide-react';
 
 interface NavBarProps {
   page: string;
@@ -8,92 +8,101 @@ interface NavBarProps {
 
 const LINKS = [
   { id: 'home', label: 'Home' },
-  { id: 'services', label: 'Services' },
-  { id: 'website', label: 'Website' },
-  { id: 'threed', label: '🧊 3D Sites' },
-  { id: 'ranger', label: 'Ranger XL' },
-  { id: 'play', label: '🎮 Play' },
-  { id: 'tools', label: '🛠 Tools' },
-  { id: 'ask', label: '💬 Ask LvTS' },
-  { id: 'contact', label: 'Contact' },
+  { id: 'services', label: 'Services', icon: Wrench },
+  { id: 'website', label: 'Website', icon: Globe },
+  { id: 'threed', label: '3D Sites', icon: Box },
+  { id: 'ranger', label: 'Ranger XL', icon: Car },
+  { id: 'play', label: 'Play', icon: Gamepad2 },
+  { id: 'tools', label: 'Tools', icon: Hammer },
+  { id: 'ask', label: 'Ask LvTS', icon: MessageCircle },
+  { id: 'contact', label: 'Contact', icon: Mail },
 ];
 
 function externalHref(id: string) {
   return `${import.meta.env.BASE_URL}#${id}`;
 }
 
-export default function NavBar({ page, onNav }: NavBarProps) {
-  const [scrolled, setScrolled] = useState(false);
-  const [open, setOpen] = useState(false);
+const BASE_SIZE = 44;
+const MAX_SCALE = 1.5;
+const INFLUENCE = 100;
 
-  useEffect(() => {
-    const fn = () => setScrolled(window.scrollY > 30);
-    window.addEventListener('scroll', fn, { passive: true });
-    return () => window.removeEventListener('scroll', fn);
-  }, []);
+export default function NavBar({ page, onNav }: NavBarProps) {
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
+    const mouseX = e.clientX;
+    itemRefs.current.forEach(el => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const center = rect.left + rect.width / 2;
+      const dist = Math.abs(mouseX - center);
+      const scale = dist < INFLUENCE ? 1 + (MAX_SCALE - 1) * (1 - dist / INFLUENCE) : 1;
+      el.style.transform = `translateY(${-(scale - 1) * 20}px) scale(${scale})`;
+    });
+  }
+
+  function resetDock() {
+    itemRefs.current.forEach(el => { if (el) el.style.transform = 'translateY(0) scale(1)'; });
+  }
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'nav-glass' : ''}`}>
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 1.5rem', height: 68, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <button onClick={() => { onNav('home'); setOpen(false); }} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, lineHeight: 0 }}>
-            <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="LVTS banner" style={{ height: 34, width: 'auto', objectFit: 'contain' }} />
-          </button>
-        </div>
-
-        <div style={{ display: 'flex', gap: '0.05rem', alignItems: 'center', overflowX: 'auto', scrollbarWidth: 'none' }} className="hidden-mobile nav-links">
-          {LINKS.map(l => l.id === 'home' ? (
-            <button key={l.id} onClick={() => onNav(l.id)}
+    <nav style={{ position: 'fixed', bottom: 16, left: 0, right: 0, zIndex: 50, display: 'flex', justifyContent: 'center', pointerEvents: 'none' }}>
+      <div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={resetDock}
+        className="dock"
+        style={{
+          pointerEvents: 'auto', display: 'flex', alignItems: 'flex-end', gap: 10,
+          padding: '10px 14px', borderRadius: 22, maxWidth: 'calc(100vw - 20px)',
+          background: 'rgba(255,255,255,0.65)', backdropFilter: 'blur(20px) saturate(180%)', WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+          border: '1px solid rgba(255,255,255,0.6)', boxShadow: '0 10px 40px rgba(15,23,42,0.18), 0 1px 0 rgba(255,255,255,0.4) inset',
+        }}>
+        {LINKS.map((l, i) => {
+          const Icon = l.icon;
+          const active = page === l.id;
+          const tile = (
+            <div
+              ref={el => { itemRefs.current[i] = el; }}
+              className="dock-item"
               style={{
-                background: page === l.id ? 'rgba(37,99,235,0.08)' : 'none',
-                border: page === l.id ? '1px solid rgba(37,99,235,0.3)' : '1px solid transparent',
-                color: page === l.id ? '#2563eb' : '#475569',
-                padding: '0.4rem 0.5rem', borderRadius: 8,
-                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.76rem',
-                cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap', flexShrink: 0,
+                width: BASE_SIZE, height: BASE_SIZE, borderRadius: 13, flexShrink: 0,
+                background: active ? 'linear-gradient(135deg,#2563eb,#7c3aed)' : '#fff',
+                border: active ? 'none' : '1px solid rgba(15,23,42,0.08)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
+                boxShadow: active ? '0 6px 16px rgba(37,99,235,0.35)' : '0 2px 6px rgba(15,23,42,0.08)',
+                transformOrigin: 'bottom center', transition: 'transform 0.12s cubic-bezier(0.34,1.56,0.64,1)', cursor: 'pointer',
               }}>
-              {l.label}
+              {l.id === 'home'
+                ? <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Home" style={{ width: '70%', height: '70%', objectFit: 'contain', borderRadius: 6 }} />
+                : Icon && <Icon size={20} color={active ? '#fff' : '#475569'} strokeWidth={2} />}
+              <span className="dock-tooltip">{l.label}</span>
+              {active && <span style={{ position: 'absolute', bottom: -7, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '50%', background: '#2563eb' }} />}
+            </div>
+          );
+          return l.id === 'home' ? (
+            <button key={l.id} onClick={() => onNav('home')} aria-label="Home"
+              style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
+              {tile}
             </button>
           ) : (
-            <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer"
-              style={{
-                display: 'flex', alignItems: 'center', gap: '0.25rem',
-                background: 'none', border: '1px solid transparent',
-                color: '#475569', padding: '0.4rem 0.5rem', borderRadius: 8,
-                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.76rem',
-                cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0,
-              }}>
-              {l.label} <ExternalLink size={10} />
+            <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer" aria-label={l.label}>
+              {tile}
             </a>
-          ))}
-        </div>
-
-        <button onClick={() => setOpen(!open)} style={{ display: 'none', background: 'none', border: 'none', color: '#0f172a', cursor: 'pointer' }} className="mobile-menu-btn">
-          {open ? <X size={24} /> : <Menu size={24} />}
-        </button>
+          );
+        })}
       </div>
 
-      {open && (
-        <div style={{ background: 'rgba(255,255,255,0.98)', borderTop: '1px solid rgba(37,99,235,0.1)', padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', boxShadow: '0 8px 30px rgba(0,0,0,0.08)' }}>
-          {LINKS.map(l => l.id === 'home' ? (
-            <button key={l.id} onClick={() => { onNav(l.id); setOpen(false); }}
-              style={{ background: 'none', border: 'none', color: page === l.id ? '#2563eb' : '#475569', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '1rem', textAlign: 'left', padding: '0.6rem 0', cursor: 'pointer', borderBottom: '1px solid rgba(0,0,0,0.06)' }}>
-              {l.label}
-            </button>
-          ) : (
-            <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer" onClick={() => setOpen(false)}
-              style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#475569', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '1rem', textAlign: 'left', padding: '0.6rem 0', cursor: 'pointer', borderBottom: '1px solid rgba(0,0,0,0.06)', textDecoration: 'none' }}>
-              {l.label} <ExternalLink size={13} />
-            </a>
-          ))}
-        </div>
-      )}
-
       <style>{`
-        .nav-links::-webkit-scrollbar{display:none;}
-        @media(max-width:900px){
-          .hidden-mobile{display:none!important;}
-          .mobile-menu-btn{display:block!important;}
+        .dock::-webkit-scrollbar { display: none; }
+        .dock-tooltip {
+          position: absolute; bottom: calc(100% + 10px); left: 50%; transform: translateX(-50%);
+          background: rgba(15,23,42,0.92); color: #fff; font-size: 0.7rem; font-weight: 600;
+          padding: 0.3rem 0.6rem; border-radius: 6px; white-space: nowrap;
+          opacity: 0; pointer-events: none; transition: opacity 0.15s;
+        }
+        .dock-item:hover .dock-tooltip { opacity: 1; }
+        @media (max-width: 640px) {
+          .dock { gap: 6px !important; padding: 8px 10px !important; overflow-x: auto; }
         }
       `}</style>
     </nav>
