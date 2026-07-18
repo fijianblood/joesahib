@@ -513,6 +513,10 @@ export default function WebsitePage({ onNav }: { onNav: (p: string) => void }) {
           onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)'; }}>
           Let's Discuss Your Project →
         </button>
+        <a href={`${import.meta.env.BASE_URL}lvts-contact-flyer.png`} target="_blank" rel="noopener noreferrer"
+          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.4rem', marginTop: '1.5rem', color: 'rgba(255,255,255,0.85)', fontWeight: 600, fontSize: '0.85rem', textDecoration: 'none' }}>
+          📇 Save our contact card <ExternalLink size={12}/>
+        </a>
       </section>
     </>
   );

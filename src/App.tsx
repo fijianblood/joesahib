@@ -4,13 +4,14 @@ import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import WebsitePage from './pages/WebsitePage';
+import ThreeDPage from './pages/ThreeDPage';
 import RangerPage from './pages/RangerPage';
 import ContactPage from './pages/ContactPage';
 import PlayPage from './pages/PlayPage';
 import ToolsPage from './pages/ToolsPage';
 import AskLvtsPage from './pages/AskLvtsPage';
 
-const VALID_PAGES = ['home', 'services', 'website', 'ranger', 'play', 'tools', 'ask', 'contact'];
+const VALID_PAGES = ['home', 'services', 'website', 'threed', 'ranger', 'play', 'tools', 'ask', 'contact'];
 
 function initialPage() {
   const hash = window.location.hash.replace('#', '');
@@ -27,6 +28,7 @@ export default function App() {
       {page === 'home'     && <HomePage     onNav={setPage} />}
       {page === 'services' && <ServicesPage onNav={setPage} />}
       {page === 'website'  && <WebsitePage  onNav={setPage} />}
+      {page === 'threed'   && <ThreeDPage   onNav={setPage} />}
       {page === 'ranger'   && <RangerPage />}
       {page === 'play'     && <PlayPage />}
       {page === 'tools'    && <ToolsPage />}

@@ -9,8 +9,9 @@ interface NavBarProps {
 const LINKS = [
   { id: 'home', label: 'Home' },
   { id: 'services', label: 'Services' },
-  { id: 'website', label: 'Need a Website?' },
-  { id: 'ranger', label: 'Ford Ranger XL 2024' },
+  { id: 'website', label: 'Website' },
+  { id: 'threed', label: '🧊 3D Sites' },
+  { id: 'ranger', label: 'Ranger XL' },
   { id: 'play', label: '🎮 Play' },
   { id: 'tools', label: '🛠 Tools' },
   { id: 'ask', label: '💬 Ask LvTS' },
@@ -40,29 +41,29 @@ export default function NavBar({ page, onNav }: NavBarProps) {
           </button>
         </div>
 
-        <div style={{ display: 'flex', gap: '0.1rem', alignItems: 'center' }} className="hidden-mobile">
+        <div style={{ display: 'flex', gap: '0.05rem', alignItems: 'center', overflowX: 'auto', scrollbarWidth: 'none' }} className="hidden-mobile nav-links">
           {LINKS.map(l => l.id === 'home' ? (
             <button key={l.id} onClick={() => onNav(l.id)}
               style={{
                 background: page === l.id ? 'rgba(37,99,235,0.08)' : 'none',
                 border: page === l.id ? '1px solid rgba(37,99,235,0.3)' : '1px solid transparent',
                 color: page === l.id ? '#2563eb' : '#475569',
-                padding: '0.4rem 0.65rem', borderRadius: 8,
-                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.82rem',
-                cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap',
+                padding: '0.4rem 0.5rem', borderRadius: 8,
+                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.76rem',
+                cursor: 'pointer', transition: 'all 0.2s', whiteSpace: 'nowrap', flexShrink: 0,
               }}>
               {l.label}
             </button>
           ) : (
             <a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer"
               style={{
-                display: 'flex', alignItems: 'center', gap: '0.3rem',
+                display: 'flex', alignItems: 'center', gap: '0.25rem',
                 background: 'none', border: '1px solid transparent',
-                color: '#475569', padding: '0.4rem 0.65rem', borderRadius: 8,
-                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.82rem',
-                cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none', whiteSpace: 'nowrap',
+                color: '#475569', padding: '0.4rem 0.5rem', borderRadius: 8,
+                fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '0.76rem',
+                cursor: 'pointer', transition: 'all 0.2s', textDecoration: 'none', whiteSpace: 'nowrap', flexShrink: 0,
               }}>
-              {l.label} <ExternalLink size={11} />
+              {l.label} <ExternalLink size={10} />
             </a>
           ))}
         </div>
@@ -89,7 +90,8 @@ export default function NavBar({ page, onNav }: NavBarProps) {
       )}
 
       <style>{`
-        @media(max-width:640px){
+        .nav-links::-webkit-scrollbar{display:none;}
+        @media(max-width:900px){
           .hidden-mobile{display:none!important;}
           .mobile-menu-btn{display:block!important;}
         }

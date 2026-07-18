@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { useScrollFade } from '../hooks/useScrollFade';
-import { Phone, Mail, MapPin, Send, CheckCircle, AlertCircle, Loader2, ExternalLink } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, CheckCircle, AlertCircle, Loader2, Link2, ShoppingBag, Compass, Flag, Home, Music2 } from 'lucide-react';
 
 const SOCIALS = [
-
-  { label: 'Linktree', handle: 'linktr.ee/sahibjoe', url: 'https://linktr.ee/sahibjoe', color: '#7c3aed' },
-  { label: 'Vitikart', handle: 'joesahib store', url: 'https://www.vitikart.com.fj/marketplace/joesahib.html', color: '#81d709' },
-  { label: 'Content Tours', handle: 'Korolevu, Sigatoka', url: 'https://contentrentaltour.netlify.app/', color: '#d2dc14' },
-  { label: 'One Nation Political Party', handle: 'One Nation Fiji', url: 'https://onenationfiji.netlify.app/', color: '#3ea97e' },
-  { label: 'Red-Hill Real Estate', handle: 'Suva, Fiji', url: 'https://redhillrealestate.netlify.app/', color: '#cd0f0f' },
-   { label: 'TikTok', handle: '@fijianblood8', url: 'https://www.tiktok.com/@fijianblood8', color: '#06b6d4' },
+  { label: 'Linktree', handle: 'linktr.ee/sahibjoe', url: 'https://linktr.ee/sahibjoe', color: '#7c3aed', icon: Link2 },
+  { label: 'Vitikart', handle: 'joesahib store', url: 'https://www.vitikart.com.fj/marketplace/joesahib.html', color: '#81d709', icon: ShoppingBag },
+  { label: 'Content Tours', handle: 'Korolevu, Sigatoka', url: 'https://contentrentaltour.netlify.app/', color: '#d2dc14', icon: Compass },
+  { label: 'One Nation Political Party', handle: 'One Nation Fiji', url: 'https://onenationfiji.netlify.app/', color: '#3ea97e', icon: Flag },
+  { label: 'Red-Hill Real Estate', handle: 'Suva, Fiji', url: 'https://redhillrealestate.netlify.app/', color: '#cd0f0f', icon: Home },
+  { label: 'TikTok', handle: '@fijianblood8', url: 'https://www.tiktok.com/@fijianblood8', color: '#06b6d4', icon: Music2 },
 ];
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
@@ -173,17 +172,19 @@ export default function ContactPage() {
             {/* Social links */}
             <div>
               <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#2563eb', marginBottom: '1rem' }}>Personal Projects</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {SOCIALS.map(s => (
-                  <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="card-3d"
-                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#fff', border: `1px solid ${s.color}25`, borderLeft: `3px solid ${s.color}`, borderRadius: 10, padding: '0.9rem 1.2rem', textDecoration: 'none', transition: 'border-color 0.2s' }}>
-                    <div>
-                      <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '0.9rem' }}>{s.label}</div>
-                      <div style={{ fontSize: '0.77rem', color: s.color }}>{s.handle}</div>
-                    </div>
-                    <ExternalLink size={16} color="#64748b" />
-                  </a>
-                ))}
+              <div className="flex flex-wrap gap-3">
+                {SOCIALS.map(s => {
+                  const Icon = s.icon;
+                  return (
+                    <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" title={`${s.label} — ${s.handle}`} aria-label={s.label}
+                      className="flex items-center justify-center size-[44px] rounded-full bg-white cursor-pointer transition-[transform,border-color,box-shadow] duration-150 ease-[cubic-bezier(0.165,0.84,0.44,1)] active:scale-[0.95]"
+                      style={{ border: `1.5px solid ${s.color}40` }}
+                      onMouseEnter={e => { e.currentTarget.style.borderColor = s.color; e.currentTarget.style.boxShadow = `0 6px 16px ${s.color}30`; }}
+                      onMouseLeave={e => { e.currentTarget.style.borderColor = `${s.color}40`; e.currentTarget.style.boxShadow = 'none'; }}>
+                      <Icon size={18} color={s.color} />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </div>
