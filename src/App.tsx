@@ -6,13 +6,14 @@ import HomePage from './pages/HomePage';
 import ServicesPage from './pages/ServicesPage';
 import WebsitePage from './pages/WebsitePage';
 import ThreeDPage from './pages/ThreeDPage';
+import RewardsPage from './pages/RewardsPage';
 import RangerPage from './pages/RangerPage';
 import ContactPage from './pages/ContactPage';
 import PlayPage from './pages/PlayPage';
 import ToolsPage from './pages/ToolsPage';
 import AskLvtsPage from './pages/AskLvtsPage';
 
-const VALID_PAGES = ['home', 'services', 'website', 'threed', 'ranger', 'play', 'tools', 'ask', 'contact'];
+const VALID_PAGES = ['home', 'services', 'website', 'threed', 'rewards', 'ranger', 'play', 'tools', 'ask', 'contact'];
 
 function initialPage() {
   const hash = window.location.hash.replace('#', '');
@@ -25,6 +26,7 @@ function renderPage(page: string, onNav: (p: string) => void) {
     case 'services': return <ServicesPage onNav={onNav} />;
     case 'website':  return <WebsitePage  onNav={onNav} />;
     case 'threed':   return <ThreeDPage   onNav={onNav} />;
+    case 'rewards':  return <RewardsPage  onNav={onNav} />;
     case 'ranger':   return <RangerPage />;
     case 'play':     return <PlayPage />;
     case 'tools':    return <ToolsPage />;

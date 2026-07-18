@@ -1,6 +1,6 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Wrench, Globe, Box, Car, Gamepad2, Hammer, MessageCircle, Mail } from 'lucide-react';
+import { Wrench, Globe, Box, Gift, Car, Gamepad2, Hammer, MessageCircle, Mail } from 'lucide-react';
 
 interface NavBarProps {
   page: string;
@@ -12,6 +12,7 @@ const LINKS = [
   { id: 'services', label: 'Services', icon: Wrench },
   { id: 'website', label: 'Website', icon: Globe },
   { id: 'threed', label: '3D Sites', icon: Box },
+  { id: 'rewards', label: 'Rewards', icon: Gift },
   { id: 'ranger', label: 'Ranger XL', icon: Car },
   { id: 'play', label: 'Play', icon: Gamepad2 },
   { id: 'tools', label: 'Tools', icon: Hammer },
