@@ -42,7 +42,7 @@ export default function PlayPage() {
     setSolved(false);
     setShowHint(false);
     setHasRun(false);
-  }, [levelIdx]);
+  }, [levelIdx, level.starter]);
 
   function runChallenge() {
     const result = runWeave(code);

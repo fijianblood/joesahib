@@ -1,5 +1,17 @@
 import { useScrollFade } from '../hooks/useScrollFade';
-import { Monitor, Wrench, Wifi, ShieldCheck, Globe, Printer, Rss, ExternalLink } from 'lucide-react';
+import { Monitor, Wrench, Wifi, ShieldCheck, Globe, Printer, Rss, ExternalLink, Award, BadgeCheck, Tag, Star } from 'lucide-react';
+
+const GOOGLE_REVIEWS_URL = 'https://www.google.com/maps?cid=7436351358223208834';
+
+const TRUST_STATS = [
+  { icon: <Award size={22} />, value: '10+', label: 'Years IT Experience', color: '#2563eb' },
+  { icon: <Wrench size={22} />, value: '1500+', label: 'Devices Repaired', color: '#06b6d4' },
+];
+
+const TRUST_CERTS = [
+  { title: 'Career Skills in Software Development', issuer: 'LinkedIn Learning', url: 'https://www.linkedin.com/learning/certificates/9415915c8a737909b30a164b9d03fd868b04b7abe90a5f0abbdd275d41f26aa6' },
+  { title: 'Career Essentials in System Administration', issuer: 'LinkedIn Learning', url: 'https://www.linkedin.com/learning/certificates/ca37c329baa5d7ba0dd24c667cb6bd51b73c4db26b1014daa23c082255ac73db' },
+];
 
 const SERVICES = [
   {
@@ -37,9 +49,41 @@ const EXTRA = [
   { icon: <ShieldCheck size={20} />, title: 'Email Hosting', desc: 'Business email setup, hosting, and domain configuration.' },
 ];
 
+function ServiceCard({ s, i }: { s: (typeof SERVICES)[number]; i: number }) {
+  const ref = useScrollFade();
+  return (
+    <div key={s.title} ref={ref} className="fade-in card-3d"
+      style={{ background: '#fff', border: `1px solid ${s.color}30`, borderTop: `3px solid ${s.color}`, borderRadius: 14, overflow: 'hidden', transitionDelay: `${i * 0.1}s` }}>
+      {/* Video */}
+      <div style={{ position: 'relative', paddingBottom: '60%', height: 0, overflow: 'hidden', background: '#000' }}>
+        <iframe
+          src={s.video}
+          style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+          allow="autoplay; encrypted-media"
+          allowFullScreen
+          title={s.title}
+        />
+      </div>
+      <div style={{ padding: '1.4rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
+          <div style={{ color: s.color }}>{s.icon}</div>
+          <h3 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '1.1rem', color: '#0f172a' }}>{s.title}</h3>
+        </div>
+        <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: 1.7, marginBottom: '1rem' }}>{s.desc}</p>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+          {s.tags.map(t => (
+            <span key={t} style={{ background: `${s.color}18`, border: `1px solid ${s.color}35`, color: s.color, borderRadius: 6, padding: '0.2rem 0.55rem', fontSize: '0.7rem', fontWeight: 600 }}>{t}</span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) {
   const heroRef = useScrollFade();
   const extraRef = useScrollFade();
+  const trustRef = useScrollFade();
   const flyerRef = useScrollFade();
   const fbRef = useScrollFade();
 
@@ -61,36 +105,9 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
 
         {/* Main service cards with video */}
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(320px,100%),1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-          {SERVICES.map((s, i) => {
-            const ref = useScrollFade();
-            return (
-              <div key={s.title} ref={ref} className="fade-in card-3d"
-                style={{ background: '#fff', border: `1px solid ${s.color}30`, borderTop: `3px solid ${s.color}`, borderRadius: 14, overflow: 'hidden', transitionDelay: `${i * 0.1}s` }}>
-                {/* Video */}
-                <div style={{ position: 'relative', paddingBottom: '60%', height: 0, overflow: 'hidden', background: '#000' }}>
-                  <iframe
-                    src={s.video}
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
-                    allow="autoplay; encrypted-media"
-                    allowFullScreen
-                    title={s.title}
-                  />
-                </div>
-                <div style={{ padding: '1.4rem' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.75rem' }}>
-                    <div style={{ color: s.color }}>{s.icon}</div>
-                    <h3 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 700, fontSize: '1.1rem', color: '#0f172a' }}>{s.title}</h3>
-                  </div>
-                  <p style={{ fontSize: '0.875rem', color: '#64748b', lineHeight: 1.7, marginBottom: '1rem' }}>{s.desc}</p>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                    {s.tags.map(t => (
-                      <span key={t} style={{ background: `${s.color}18`, border: `1px solid ${s.color}35`, color: s.color, borderRadius: 6, padding: '0.2rem 0.55rem', fontSize: '0.7rem', fontWeight: 600 }}>{t}</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {SERVICES.map((s, i) => (
+            <ServiceCard key={s.title} s={s} i={i} />
+          ))}
         </div>
       </section>
 
@@ -112,6 +129,78 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust */}
+      <section style={{ padding: '80px 1.5rem', background: '#fff' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div ref={trustRef} className="fade-in" style={{ textAlign: 'center', marginBottom: '3rem' }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'linear-gradient(204deg,#292929 3%,#666 51%,#292929 100%)', border: '1px solid #bababa', borderRadius: 10, padding: '0.3rem 0.9rem', marginBottom: '1rem' }}>
+              <BadgeCheck size={13} color="#fff" />
+              <span style={{ fontSize: '0.7rem', fontWeight: 600, color: '#fff', letterSpacing: '0.02em' }}>Verified &amp; Trusted</span>
+            </div>
+            <h2 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(1.8rem,4vw,2.4rem)', color: '#0f172a', marginBottom: '0.75rem' }}>
+              Why Fiji Trusts <span className="grad-text">LomaVata</span>
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '0.95rem', lineHeight: 1.7, maxWidth: 560, margin: '0 auto' }}>
+              A decade of hands-on repair work, verifiable credentials, and a 5-star record you can check on Google — trust you can check, not just take our word for.
+            </p>
+          </div>
+
+          {/* Top bento row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(240px,1fr))', gap: '1.25rem', marginBottom: '1.25rem' }}>
+            {TRUST_STATS.map(s => (
+              <div key={s.label} className="card-3d" style={{ background: '#fff', border: `1px solid ${s.color}30`, borderTop: `3px solid ${s.color}`, borderRadius: 14, padding: '1.6rem', boxShadow: '0 4px 16px rgba(0,0,0,0.05)' }}>
+                <div style={{ color: s.color, marginBottom: '0.6rem' }}>{s.icon}</div>
+                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '2.2rem', color: '#0f172a', lineHeight: 1 }}>{s.value}</div>
+                <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '0.35rem' }}>{s.label}</div>
+              </div>
+            ))}
+            <a href={GOOGLE_REVIEWS_URL} target="_blank" rel="noopener noreferrer" className="card-3d"
+              style={{ background: '#fff', border: '1px solid rgba(245,158,11,0.3)', borderTop: '3px solid #f59e0b', borderRadius: 14, padding: '1.6rem', boxShadow: '0 4px 16px rgba(0,0,0,0.05)', textDecoration: 'none', display: 'block' }}>
+              <div style={{ display: 'flex', gap: 2, color: '#f59e0b', marginBottom: '0.6rem' }}>
+                {Array.from({ length: 5 }).map((_, i) => <Star key={i} size={16} fill="#f59e0b" />)}
+              </div>
+              <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '2.2rem', color: '#0f172a', lineHeight: 1 }}>5.0</div>
+              <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '0.35rem', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>Google Reviews (2) <ExternalLink size={12} /></div>
+            </a>
+            <div className="card-3d" style={{ background: '#fff', border: '1px solid rgba(124,58,237,0.2)', borderTop: '3px solid #7c3aed', borderRadius: 14, padding: '1.6rem', boxShadow: '0 4px 16px rgba(0,0,0,0.05)' }}>
+              <div style={{ color: '#7c3aed', marginBottom: '0.6rem' }}><ShieldCheck size={22} /></div>
+              <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.35rem' }}>Repair Guarantee</div>
+              <div style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.6 }}>Every repair is checked before handover — no shortcuts, no surprises.</div>
+            </div>
+          </div>
+
+          {/* Bottom bento row */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '1.25rem' }}>
+            <div className="card-3d" style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 14, padding: '1.6rem' }}>
+              <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.9rem' }}>Verified Credentials</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                {TRUST_CERTS.map(c => (
+                  <a key={c.title} href={c.url} target="_blank" rel="noopener noreferrer"
+                    style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', background: '#fff', border: '1px solid #e2e8f0', borderRadius: 10, padding: '0.7rem 0.9rem', textDecoration: 'none' }}>
+                    <div>
+                      <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#0f172a' }}>{c.title}</div>
+                      <div style={{ fontSize: '0.72rem', color: '#2563eb' }}>{c.issuer}</div>
+                    </div>
+                    <ExternalLink size={15} color="#94a3b8" />
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div className="card-3d" style={{ background: 'linear-gradient(135deg,rgba(37,99,235,0.06),rgba(124,58,237,0.06))', border: '1px solid rgba(37,99,235,0.15)', borderRadius: 14, padding: '1.6rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+              <div>
+                <div style={{ color: '#2563eb', marginBottom: '0.6rem' }}><Tag size={22} /></div>
+                <div style={{ fontWeight: 700, color: '#0f172a', marginBottom: '0.35rem' }}>Transparent Pricing</div>
+                <div style={{ fontSize: '0.8rem', color: '#64748b', lineHeight: 1.6, marginBottom: '1rem' }}>Repairs from FJD $25, quoted upfront before any work begins — no hidden fees.</div>
+              </div>
+              <button onClick={() => onNav('contact')}
+                style={{ alignSelf: 'flex-start', background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.6rem 1.3rem', borderRadius: 8, fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer' }}>
+                Book a Repair
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -156,6 +245,15 @@ export default function ServicesPage({ onNav }: { onNav: (p: string) => void }) 
                 </div>
               ))}
             </div>
+
+            <a href={`${import.meta.env.BASE_URL}lvts-contact-flyer.png`} target="_blank" rel="noopener noreferrer"
+              className="card-3d" style={{ display: 'flex', alignItems: 'center', gap: '0.8rem', marginTop: '0.75rem', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10, padding: '0.7rem', textDecoration: 'none' }}>
+              <img src={`${import.meta.env.BASE_URL}lvts-contact-flyer.png`} alt="LvTS contact card" style={{ width: 44, height: 44, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+              <div>
+                <div style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f172a' }}>Save Our Contact Card</div>
+                <div style={{ fontSize: '0.7rem', color: '#64748b' }}>Tap to view full size</div>
+              </div>
+            </a>
           </div>
         </div>
       </section>
