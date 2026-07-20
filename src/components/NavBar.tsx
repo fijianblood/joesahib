@@ -1,6 +1,9 @@
 import { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Wrench, Globe, Box, Gift, Car, Gamepad2, Hammer, MessageCircle, Mail } from 'lucide-react';
+import {
+  IconTool, IconWorld, IconCube, IconGift, IconTruck,
+  IconDeviceGamepad2, IconHammer, IconMessageCircle, IconMail,
+} from '@tabler/icons-react';
 
 interface NavBarProps {
   page: string;
@@ -9,15 +12,15 @@ interface NavBarProps {
 
 const LINKS = [
   { id: 'home', label: 'Home' },
-  { id: 'services', label: 'Services', icon: Wrench },
-  { id: 'website', label: 'Website', icon: Globe },
-  { id: 'threed', label: '3D Sites', icon: Box },
-  { id: 'rewards', label: 'Rewards', icon: Gift },
-  { id: 'ranger', label: 'Ranger XL', icon: Car },
-  { id: 'play', label: 'Play', icon: Gamepad2 },
-  { id: 'tools', label: 'Tools', icon: Hammer },
-  { id: 'ask', label: 'Ask LvTS', icon: MessageCircle },
-  { id: 'contact', label: 'Contact', icon: Mail },
+  { id: 'services', label: 'Services', icon: IconTool, color: '#2563eb' },
+  { id: 'website', label: 'Website', icon: IconWorld, color: '#06b6d4' },
+  { id: 'threed', label: '3D Sites', icon: IconCube, color: '#7c3aed' },
+  { id: 'rewards', label: 'Rewards', icon: IconGift, color: '#f59e0b' },
+  { id: 'ranger', label: 'Ranger XL', icon: IconTruck, color: '#16a34a' },
+  { id: 'play', label: 'Play', icon: IconDeviceGamepad2, color: '#ec4899' },
+  { id: 'tools', label: 'Tools', icon: IconHammer, color: '#f97316' },
+  { id: 'ask', label: 'Ask LvTS', icon: IconMessageCircle, color: '#6366f1' },
+  { id: 'contact', label: 'Contact', icon: IconMail, color: '#ef4444' },
 ];
 
 function externalHref(id: string) {
@@ -62,23 +65,25 @@ export default function NavBar({ page, onNav }: NavBarProps) {
         {LINKS.map((l, i) => {
           const Icon = l.icon;
           const active = page === l.id;
+          const accent = l.color ?? '#2563eb';
+          const activeBg = l.id === 'home' ? 'linear-gradient(135deg,#2563eb,#7c3aed)' : accent;
           const tile = (
             <div
               ref={el => { itemRefs.current[i] = el; }}
               className="dock-item"
               style={{
                 width: BASE_SIZE, height: BASE_SIZE, borderRadius: 13, flexShrink: 0,
-                background: active ? 'linear-gradient(135deg,#2563eb,#7c3aed)' : '#fff',
+                background: active ? activeBg : '#fff',
                 border: active ? 'none' : '1px solid rgba(15,23,42,0.08)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative',
-                boxShadow: active ? '0 6px 16px rgba(37,99,235,0.35)' : '0 2px 6px rgba(15,23,42,0.08)',
-                transformOrigin: 'bottom center', transition: 'transform 0.12s cubic-bezier(0.34,1.56,0.64,1)', cursor: 'pointer',
+                boxShadow: active ? `0 6px 16px ${accent}59` : '0 2px 6px rgba(15,23,42,0.08)',
+                transformOrigin: 'bottom center', transition: 'transform 0.12s cubic-bezier(0.34,1.56,0.64,1), background 0.2s', cursor: 'pointer',
               }}>
               {l.id === 'home'
                 ? <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Home" style={{ width: '70%', height: '70%', objectFit: 'contain', borderRadius: 6 }} />
-                : Icon && <Icon size={20} color={active ? '#fff' : '#475569'} strokeWidth={2} />}
+                : Icon && <Icon size={20} color={active ? '#fff' : accent} stroke={2} />}
               <span className="dock-tooltip">{l.label}</span>
-              {active && <span style={{ position: 'absolute', bottom: -7, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '50%', background: '#2563eb' }} />}
+              {active && <span style={{ position: 'absolute', bottom: -7, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '50%', background: accent }} />}
             </div>
           );
           return l.id === 'home' ? (
