@@ -23,10 +23,6 @@ const LINKS = [
   { id: 'contact', label: 'Contact', icon: IconMail, color: '#ef4444' },
 ];
 
-function externalHref(id: string) {
-  return `${import.meta.env.BASE_URL}#${id}`;
-}
-
 const BASE_SIZE = 44;
 const MAX_SCALE = 1.5;
 const INFLUENCE = 100;
@@ -86,17 +82,12 @@ export default function NavBar({ page, onNav }: NavBarProps) {
               {active && <span style={{ position: 'absolute', bottom: -7, left: '50%', transform: 'translateX(-50%)', width: 4, height: 4, borderRadius: '50%', background: accent }} />}
             </div>
           );
-          return l.id === 'home' ? (
-            <motion.button key={l.id} onClick={() => onNav('home')} aria-label="Home"
+          return (
+            <motion.button key={l.id} onClick={() => onNav(l.id)} aria-label={l.label}
               whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 500, damping: 25 }}
               style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer' }}>
               {tile}
             </motion.button>
-          ) : (
-            <motion.a key={l.id} href={externalHref(l.id)} target="_blank" rel="noopener noreferrer" aria-label={l.label}
-              whileTap={{ scale: 0.85 }} transition={{ type: 'spring', stiffness: 500, damping: 25 }}>
-              {tile}
-            </motion.a>
           );
         })}
       </div>
