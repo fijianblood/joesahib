@@ -11,7 +11,11 @@ export default function ComicPage() {
         <h1 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(2rem,5vw,3.2rem)', color: '#0f172a', lineHeight: 1.1, marginBottom: '1rem' }}>
           <span className="grad-text">Na Signala</span>
         </h1>
-        <p style={{ color: '#64748b', fontSize: '1rem', lineHeight: 1.75 }}>
+        <p style={{ color: '#334155', fontSize: '1rem', lineHeight: 1.75, fontStyle: 'italic', marginBottom: '0.6rem' }}>
+          E dua na veimaliwai ni vuravura 2026 komiki me baleta na sala e lako kina e dua na kakaburaki levu mai na rara ni qito
+          ki na nomu sikirini — tabaka na droini, muri Joey, ka tara na tech me baleta e dua na ivakamacala matata-Vakavalagi.
+        </p>
+        <p style={{ color: '#64748b', fontSize: '0.9rem', lineHeight: 1.75 }}>
           An interactive World Cup 2026 comic about how a big broadcast travels from the stadium to your screen —
           tap the art, follow Joey, and touch the tech for a plain-English explainer.
         </p>

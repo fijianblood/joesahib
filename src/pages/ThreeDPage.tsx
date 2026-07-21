@@ -256,14 +256,14 @@ export default function ThreeDPage({ onNav }: { onNav: (p: string) => void }) {
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '3rem', alignItems: 'center' }}>
           <div ref={authRef} className="fade-in" style={{ position: 'relative' }}>
             <div className="card-3d" style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 12px 40px rgba(124,58,237,0.1)' }}>
-              <img src={`${import.meta.env.BASE_URL}author-photo.jpg`} alt="Josese Sahib" style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 420 }} />
+              <img src={`${import.meta.env.BASE_URL}author-photo.jpg`} alt="LomaVata Tech Services" style={{ width: '100%', display: 'block', objectFit: 'cover', maxHeight: 420 }} />
             </div>
           </div>
 
           <div>
             <div style={{ fontSize: '0.7rem', fontWeight: 700, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#7c3aed', marginBottom: '0.75rem' }}>Built By</div>
             <h2 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(1.6rem,3vw,2.2rem)', color: '#0f172a', lineHeight: 1.15, marginBottom: '1rem' }}>
-              Josese Sahib<br /><span className="grad-text">LomaVata Tech Services</span>
+              <span className="grad-text">LomaVata Tech Services</span>
             </h2>
             <p style={{ color: '#475569', lineHeight: 1.8, marginBottom: '1rem', fontSize: '0.95rem' }}>
               Full stack developer based in Raiwai, Suva, Fiji, now bringing interactive 3D to local websites — from small animated touches to full immersive builds.

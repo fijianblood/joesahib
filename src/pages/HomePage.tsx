@@ -89,11 +89,11 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
 
           <div style={{ position: 'relative', marginBottom: '0.5rem' }}>
             <h1 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(2.8rem,9vw,6rem)', lineHeight: 1.0, color: '#0f172a', letterSpacing: '-0.02em' }}>
-              Josese <span className="grad-text">Sahib</span>
+              LomaVata <span className="grad-text">Tech Services</span>
             </h1>
             <div className="glitch-layer" aria-hidden>
               <h1 style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 'clamp(2.8rem,9vw,6rem)', lineHeight: 1.0, letterSpacing: '-0.02em', opacity: 0.2 }}>
-                Josese Sahib
+                LomaVata Tech Services
               </h1>
             </div>
           </div>
@@ -159,7 +159,7 @@ export default function HomePage({ onNav }: { onNav: (p: string) => void }) {
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: '3rem', alignItems: 'center' }}>
           <div ref={aboutRef} className="fade-in" style={{ position: 'relative' }}>
             <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 8px 40px rgba(0,0,0,0.08)' }}>
-              <img src={`${import.meta.env.BASE_URL}joewithmv2.jpg`} alt="Josese Sahib" style={{ width: '100%', objectFit: 'cover', display: 'block' }} />
+              <img src={`${import.meta.env.BASE_URL}joewithmv2.jpg`} alt="LomaVata Tech Services" style={{ width: '100%', objectFit: 'cover', display: 'block' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(15,23,42,0.5) 0%, transparent 60%)' }} />
               <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', right: '1rem' }}>
                 {['IT Consultant','Web Dev','Fiji 🏝'].map(t => (

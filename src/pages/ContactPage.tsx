@@ -164,7 +164,7 @@ export default function ContactPage() {
               <img src={`${import.meta.env.BASE_URL}joewithmv.jpg`} alt="Josese with his Ranger" style={{ width: '100%', display: 'block', maxHeight: 280, objectFit: 'cover' }} />
               <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(4,8,15,0.8), transparent 50%)' }} />
               <div style={{ position: 'absolute', bottom: '1rem', left: '1rem' }}>
-                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>Josese Sahib</div>
+                <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1.1rem', color: '#fff' }}>LomaVata Tech Services</div>
                 <div style={{ fontSize: '0.75rem', color: '#06b6d4' }}>IT Sales Pro · Raiwai, Suva</div>
               </div>
             </div>
