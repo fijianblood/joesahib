@@ -1,8 +1,38 @@
+import { useEffect, useRef, useState } from 'react';
+
 interface MediTrackPageProps {
   onNav: (page: string) => void;
 }
 
 export default function MediTrackPage({ onNav }: MediTrackPageProps) {
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [height, setHeight] = useState(760);
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+    let observer: ResizeObserver | undefined;
+
+    function attach() {
+      try {
+        const doc = iframe!.contentDocument;
+        if (!doc) return;
+        const measure = () => setHeight(doc.documentElement.scrollHeight);
+        measure();
+        observer = new ResizeObserver(measure);
+        observer.observe(doc.documentElement);
+      } catch {
+        // cross-origin fallback — keep the default height
+      }
+    }
+
+    iframe.addEventListener('load', attach);
+    return () => {
+      iframe.removeEventListener('load', attach);
+      observer?.disconnect();
+    };
+  }, []);
+
   return (
     <section style={{ padding: '96px 1.5rem 100px', position: 'relative', overflow: 'hidden' }}>
       <div className="orb" style={{ width: 420, height: 420, background: 'rgba(193,68,59,0.06)', top: '-5%', right: '-5%' }} />
@@ -17,27 +47,16 @@ export default function MediTrackPage({ onNav }: MediTrackPageProps) {
         </h1>
         <p style={{ color: '#64748b', fontSize: '1rem', lineHeight: 1.75 }}>
           Blood pressure trends, blood results, doctor's appointments, visit history, and medical history — all in
-          one dashboard. Every entry saves to this device only. Nothing uploads, nothing leaves your browser.
+          one dashboard. Every entry, and any file you attach, saves to this device only. Nothing uploads.
         </p>
       </div>
 
-      <div
-        style={{
-          maxWidth: 760,
-          margin: '0 auto 2.5rem',
-          borderRadius: 20,
-          overflow: 'hidden',
-          border: '1px solid #e2e8f0',
-          boxShadow: '0 20px 60px rgba(15,23,42,0.12)',
-          background: '#F6F3EC',
-          position: 'relative',
-        }}
-      >
+      <div style={{ maxWidth: 760, margin: '0 auto 2.5rem' }}>
         <iframe
+          ref={iframeRef}
           src={`${import.meta.env.BASE_URL}meditrack/index.html`}
           title="MediTrack Fiji"
-          style={{ width: '100%', height: '90vh', minHeight: 760, border: 'none', display: 'block' }}
-          loading="lazy"
+          style={{ width: '100%', height, border: 'none', display: 'block' }}
         />
       </div>
 

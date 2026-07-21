@@ -82,7 +82,15 @@
     font-size:15px;background:#FBFAF6;color:var(--ink);
   }
   input[type=date],input[type=time],select{font-family:'Inter',sans-serif;font-size:14px;}
+  input[type=file]{font-family:'Inter',sans-serif;font-size:13px;padding:7px 8px;}
   input:focus,select:focus{outline:2px solid var(--normal);outline-offset:1px;}
+  .file-hint{font-size:11px;color:#8A93A0;margin-top:4px;}
+  .attach{
+    background:none;border:1px solid var(--line);color:var(--ink);
+    font-family:'Inter',sans-serif;font-size:11px;cursor:pointer;
+    padding:3px 9px;border-radius:100px;white-space:nowrap;
+  }
+  .attach:hover{background:#FBFAF6;}
   button{
     grid-column:1/-1;
     background:var(--ink);color:#fff;border:none;
@@ -144,6 +152,10 @@
         <div><label for="bpDate">Date</label><input id="bpDate" type="date"></div>
         <div><label for="bpTime">Time</label><input id="bpTime" type="time"></div>
         <div><label for="bpNote">Note</label><input id="bpNote" type="text" placeholder="optional"></div>
+        <div class="full">
+          <label for="bpFile">Attach result (image or PDF)</label>
+          <input id="bpFile" type="file" accept="image/*,application/pdf">
+        </div>
         <button type="submit">Save reading</button>
       </form>
     </div>
@@ -175,6 +187,10 @@
         <div><label for="labUnit">Unit</label><input id="labUnit" type="text" placeholder="e.g. mmol/L"></div>
         <div><label for="labDate">Date</label><input id="labDate" type="date"></div>
         <div class="full"><label for="labNote">Note</label><input id="labNote" type="text" placeholder="optional — e.g. reference range, fasting"></div>
+        <div class="full">
+          <label for="labFile">Attach result (image or PDF)</label>
+          <input id="labFile" type="file" accept="image/*,application/pdf">
+        </div>
         <button type="submit">Save result</button>
       </form>
     </div>
@@ -274,6 +290,59 @@ function fmtDate(iso){
   const d = new Date(iso);
   return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
 }
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+// ---------- local file attachments (IndexedDB — files never leave this device) ----------
+const FILES_DB = 'meditrack_files';
+const FILES_STORE = 'files';
+function openFilesDb(){
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(FILES_DB, 1);
+    req.onupgradeneeded = () => { req.result.createObjectStore(FILES_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function saveFile(id, file){
+  const db = await openFilesDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(FILES_STORE, 'readwrite');
+    tx.objectStore(FILES_STORE).put(file, id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+async function getFile(id){
+  const db = await openFilesDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(FILES_STORE, 'readonly');
+    const req = tx.objectStore(FILES_STORE).get(id);
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+async function deleteFile(id){
+  const db = await openFilesDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(FILES_STORE, 'readwrite');
+    tx.objectStore(FILES_STORE).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error);
+  });
+}
+function wireAttachmentButtons(wrap){
+  wrap.querySelectorAll('.attach').forEach(btn=>{
+    btn.addEventListener('click', async ()=>{
+      const file = await getFile(btn.dataset.id);
+      if(!file) return;
+      const url = URL.createObjectURL(file);
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+    });
+  });
+}
 
 // ---------- BLOOD PRESSURE ----------
 const BP_KEY = 'mtf_bp_records';
@@ -327,23 +396,27 @@ function renderBp(){
       <td class="date">${d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})} ${d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</td>
       <td>${r.sys}/${r.dia}${r.pulse?` · ${r.pulse}bpm`:''}</td>
       <td><span class="badge" style="background:${c.color}">${c.label}</span></td>
-      <td class="text">${r.note||''}</td>
+      <td class="text">${escapeHtml(r.note||'')}</td>
+      <td>${r.fileName ? `<button class="attach" data-id="${r.id}">📎 View</button>` : ''}</td>
       <td><button class="del" data-id="${r.id}">Remove</button></td>
     </tr>`;
   }).join('');
   wrap.innerHTML = `<table>
-    <thead><tr><th>When</th><th>Reading</th><th>Status</th><th>Note</th><th></th></tr></thead>
+    <thead><tr><th>When</th><th>Reading</th><th>Status</th><th>Note</th><th>File</th><th></th></tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
   wrap.querySelectorAll('.del').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+    btn.addEventListener('click', async ()=>{
+      const target = loadList(BP_KEY).find(r => r.id === btn.dataset.id);
       saveList(BP_KEY, loadList(BP_KEY).filter(r => r.id !== btn.dataset.id));
+      if(target && target.fileName) await deleteFile(target.id);
       renderBp();
     });
   });
+  wireAttachmentButtons(wrap);
 }
 
-document.getElementById('bpForm').addEventListener('submit', e=>{
+document.getElementById('bpForm').addEventListener('submit', async e=>{
   e.preventDefault();
   const sys = parseInt(document.getElementById('sys').value, 10);
   const dia = parseInt(document.getElementById('dia').value, 10);
@@ -352,9 +425,17 @@ document.getElementById('bpForm').addEventListener('submit', e=>{
   const timeVal = document.getElementById('bpTime').value;
   const note = document.getElementById('bpNote').value.trim();
   const ts = dateVal ? new Date(`${dateVal}T${timeVal || '00:00'}`).toISOString() : new Date().toISOString();
+  const file = document.getElementById('bpFile').files[0];
 
+  const id = newId();
+  const record = { id, sys, dia, pulse, note, ts };
+  if(file){
+    record.fileName = file.name;
+    record.fileType = file.type;
+    await saveFile(id, file);
+  }
   const records = loadList(BP_KEY);
-  records.push({ id: newId(), sys, dia, pulse, note, ts });
+  records.push(record);
   saveList(BP_KEY, records);
   e.target.reset();
   renderBp();
@@ -373,33 +454,45 @@ function renderLabs(){
   }
   const rows = records.map(r => `<tr>
     <td class="date">${fmtDate(r.date)}</td>
-    <td class="text">${r.test}</td>
-    <td>${r.value}${r.unit?` ${r.unit}`:''}</td>
-    <td class="text">${r.note||''}</td>
+    <td class="text">${escapeHtml(r.test)}</td>
+    <td>${escapeHtml(r.value)}${r.unit?` ${escapeHtml(r.unit)}`:''}</td>
+    <td class="text">${escapeHtml(r.note||'')}</td>
+    <td>${r.fileName ? `<button class="attach" data-id="${r.id}">📎 View</button>` : ''}</td>
     <td><button class="del" data-id="${r.id}">Remove</button></td>
   </tr>`).join('');
   wrap.innerHTML = `<table>
-    <thead><tr><th>Date</th><th>Test</th><th>Result</th><th>Note</th><th></th></tr></thead>
+    <thead><tr><th>Date</th><th>Test</th><th>Result</th><th>Note</th><th>File</th><th></th></tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
   wrap.querySelectorAll('.del').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
+    btn.addEventListener('click', async ()=>{
+      const target = loadList(LABS_KEY).find(r => r.id === btn.dataset.id);
       saveList(LABS_KEY, loadList(LABS_KEY).filter(r => r.id !== btn.dataset.id));
+      if(target && target.fileName) await deleteFile(target.id);
       renderLabs();
     });
   });
+  wireAttachmentButtons(wrap);
 }
 
-document.getElementById('labsForm').addEventListener('submit', e=>{
+document.getElementById('labsForm').addEventListener('submit', async e=>{
   e.preventDefault();
   const test = document.getElementById('labTest').value.trim();
   const value = document.getElementById('labValue').value.trim();
   const unit = document.getElementById('labUnit').value.trim();
   const dateVal = document.getElementById('labDate').value || new Date().toISOString().slice(0,10);
   const note = document.getElementById('labNote').value.trim();
+  const file = document.getElementById('labFile').files[0];
 
+  const id = newId();
+  const record = { id, test, value, unit, date: dateVal, note };
+  if(file){
+    record.fileName = file.name;
+    record.fileType = file.type;
+    await saveFile(id, file);
+  }
   const records = loadList(LABS_KEY);
-  records.push({ id: newId(), test, value, unit, date: dateVal, note });
+  records.push(record);
   saveList(LABS_KEY, records);
   e.target.reset();
   renderLabs();
@@ -421,9 +514,9 @@ function renderAppts(){
     const upcoming = r.date >= today;
     return `<tr>
       <td class="date">${fmtDate(r.date)}${r.time?` · ${r.time}`:''}</td>
-      <td class="text">${r.doctor}</td>
-      <td class="text">${r.reason||''}</td>
-      <td class="text">${r.location||''}</td>
+      <td class="text">${escapeHtml(r.doctor)}</td>
+      <td class="text">${escapeHtml(r.reason||'')}</td>
+      <td class="text">${escapeHtml(r.location||'')}</td>
       <td><span class="badge" style="background:${upcoming?'var(--upcoming)':'var(--past)'}">${upcoming?'Upcoming':'Past'}</span></td>
       <td><button class="del" data-id="${r.id}">Remove</button></td>
     </tr>`;
@@ -469,9 +562,9 @@ function renderVisits(){
   }
   const rows = records.map(r => `<tr>
     <td class="date">${fmtDate(r.date)}</td>
-    <td class="text">${r.place}</td>
-    <td class="text">${r.reason||''}</td>
-    <td class="text">${r.note||''}</td>
+    <td class="text">${escapeHtml(r.place)}</td>
+    <td class="text">${escapeHtml(r.reason||'')}</td>
+    <td class="text">${escapeHtml(r.note||'')}</td>
     <td><button class="del" data-id="${r.id}">Remove</button></td>
   </tr>`).join('');
   wrap.innerHTML = `<table>
@@ -516,10 +609,10 @@ function renderHistory(){
     return;
   }
   const rows = records.map(r => `<tr>
-    <td><span class="badge" style="background:${CATEGORY_COLOR[r.category]||'var(--past)'}">${r.category}</span></td>
-    <td class="text">${r.detail}</td>
+    <td><span class="badge" style="background:${CATEGORY_COLOR[r.category]||'var(--past)'}">${escapeHtml(r.category)}</span></td>
+    <td class="text">${escapeHtml(r.detail)}</td>
     <td class="date">${r.since ? fmtDate(r.since) : ''}</td>
-    <td class="text">${r.note||''}</td>
+    <td class="text">${escapeHtml(r.note||'')}</td>
     <td><button class="del" data-id="${r.id}">Remove</button></td>
   </tr>`).join('');
   wrap.innerHTML = `<table>
