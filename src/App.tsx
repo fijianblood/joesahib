@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import './index.css';
 import NavBar from './components/NavBar';
@@ -45,9 +45,22 @@ export default function App() {
   const [page, setPage] = useState(initialPage);
   const reduceMotion = useReducedMotion();
 
+  const navigate = useCallback((p: string) => {
+    if (window.location.hash !== `#${p}`) window.location.hash = p;
+    setPage(p);
+  }, []);
+
+  useEffect(() => {
+    function onHashChange() {
+      setPage(initialPage());
+    }
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
   return (
     <>
-      <NavBar page={page} onNav={setPage} />
+      <NavBar page={page} onNav={navigate} />
       <AnimatePresence mode="wait" onExitComplete={() => window.scrollTo(0, 0)}>
         <motion.div
           key={page}
@@ -56,7 +69,7 @@ export default function App() {
           exit={reduceMotion ? undefined : { opacity: 0, scale: 0.97, y: -12 }}
           transition={{ duration: 0.32, ease: IOS_EASE }}
         >
-          {renderPage(page, setPage)}
+          {renderPage(page, navigate)}
         </motion.div>
       </AnimatePresence>
     </>
