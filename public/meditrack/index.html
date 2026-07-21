@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediTrack Fiji</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --paper:#F6F3EC;
+    --ink:#1B2A3F;
+    --line:#D9D2C2;
+    --normal:#2F6F76;
+    --elevated:#C68A1E;
+    --high1:#C1443B;
+    --high2:#8E2A24;
+    --upcoming:#2F6F76;
+    --past:#8A93A0;
+    --card:#FFFFFF;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:28px 20px 64px;}
+  header{margin-bottom:20px;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--normal);margin-bottom:6px;
+  }
+  h1{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:700;font-size:28px;margin:0 0 6px;
+  }
+  .sub{color:#5B6472;font-size:14px;max-width:52ch;}
+
+  .tabs{
+    display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;
+    border-bottom:1px solid var(--line);padding-bottom:12px;
+  }
+  .tab{
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+    background:#fff;border:1px solid var(--line);color:#5B6472;
+    padding:8px 14px;border-radius:100px;cursor:pointer;
+  }
+  .tab.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .tab:focus-visible{outline:2px solid var(--normal);outline-offset:2px;}
+
+  .section{display:none;}
+  .section.active{display:block;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    margin-bottom:20px;
+  }
+  .card h2{
+    font-family:'Space Grotesk',sans-serif;
+    font-size:15px;margin:0 0 14px;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card h2 .n{
+    font-family:'IBM Plex Mono',monospace;font-size:11px;
+    color:#8A93A0;
+  }
+
+  form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+  form .full{grid-column:1/-1;}
+  label{font-size:12px;color:#5B6472;display:block;margin-bottom:4px;}
+  input,select{
+    width:100%;padding:9px 10px;border:1px solid var(--line);
+    border-radius:8px;font-family:'IBM Plex Mono',monospace;
+    font-size:15px;background:#FBFAF6;color:var(--ink);
+  }
+  input[type=date],input[type=time],select{font-family:'Inter',sans-serif;font-size:14px;}
+  input:focus,select:focus{outline:2px solid var(--normal);outline-offset:1px;}
+  button{
+    grid-column:1/-1;
+    background:var(--ink);color:#fff;border:none;
+    padding:11px;border-radius:8px;font-weight:600;font-size:14px;
+    cursor:pointer;font-family:'Inter',sans-serif;
+  }
+  button:hover{background:#2A3D5A;}
+  button:focus-visible{outline:2px solid var(--normal);outline-offset:2px;}
+
+  canvas{max-height:260px;}
+
+  table{width:100%;border-collapse:collapse;font-size:13.5px;}
+  th{
+    text-align:left;font-size:11px;color:#8A93A0;text-transform:uppercase;
+    letter-spacing:.06em;padding:6px 8px;border-bottom:1px solid var(--line);
+  }
+  td{padding:8px 8px;border-bottom:1px solid #EFEAE0;font-family:'IBM Plex Mono',monospace;}
+  td.date{font-family:'Inter',sans-serif;color:#5B6472;}
+  td.text{font-family:'Inter',sans-serif;}
+  .badge{
+    display:inline-block;padding:2px 8px;border-radius:100px;
+    font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#fff;
+    white-space:nowrap;
+  }
+  .del{
+    background:none;border:none;color:#B0473F;font-family:'Inter',sans-serif;
+    font-size:12px;cursor:pointer;padding:0;grid-column:auto;width:auto;
+  }
+  .empty{color:#8A93A0;font-size:13px;text-align:center;padding:20px 0;}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:#5B6472;margin-top:10px;}
+  .legend span{display:inline-flex;align-items:center;gap:5px;}
+  .dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">MediTrack Fiji · local only</div>
+    <h1>MediTrack</h1>
+    <p class="sub">Blood pressure, lab results, appointments, visits, and medical history — all in one place. Every entry saves to this device only. Nothing uploads.</p>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="bp">Blood Pressure</button>
+    <button class="tab" data-tab="labs">Blood Results</button>
+    <button class="tab" data-tab="appts">Appointments</button>
+    <button class="tab" data-tab="visits">Visit History</button>
+    <button class="tab" data-tab="history">Medical History</button>
+  </nav>
+
+  <!-- ===== BLOOD PRESSURE ===== -->
+  <section class="section active" id="section-bp">
+    <div class="card">
+      <h2>Log a reading <span class="n">systolic / diastolic · mmHg</span></h2>
+      <form id="bpForm">
+        <div><label for="sys">Systolic</label><input id="sys" type="number" inputmode="numeric" min="50" max="260" required></div>
+        <div><label for="dia">Diastolic</label><input id="dia" type="number" inputmode="numeric" min="30" max="180" required></div>
+        <div><label for="pulse">Pulse (bpm)</label><input id="pulse" type="number" inputmode="numeric" min="30" max="220"></div>
+        <div><label for="bpDate">Date</label><input id="bpDate" type="date"></div>
+        <div><label for="bpTime">Time</label><input id="bpTime" type="time"></div>
+        <div><label for="bpNote">Note</label><input id="bpNote" type="text" placeholder="optional"></div>
+        <button type="submit">Save reading</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Trend <span class="n" id="bpCountLabel"></span></h2>
+      <canvas id="bpChart"></canvas>
+      <div class="legend">
+        <span><i class="dot" style="background:var(--normal)"></i>Normal &lt;120/80</span>
+        <span><i class="dot" style="background:var(--elevated)"></i>Elevated 120–129/&lt;80</span>
+        <span><i class="dot" style="background:var(--high1)"></i>Stage 1 130–139/80–89</span>
+        <span><i class="dot" style="background:var(--high2)"></i>Stage 2+ ≥140/90</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>History</h2>
+      <div id="bpHistoryWrap"></div>
+    </div>
+  </section>
+
+  <!-- ===== BLOOD RESULTS ===== -->
+  <section class="section" id="section-labs">
+    <div class="card">
+      <h2>Log a blood result</h2>
+      <form id="labsForm">
+        <div class="full"><label for="labTest">Test</label><input id="labTest" type="text" placeholder="e.g. LDL Cholesterol, HbA1c, Glucose" required></div>
+        <div><label for="labValue">Result</label><input id="labValue" type="text" placeholder="e.g. 4.8" required></div>
+        <div><label for="labUnit">Unit</label><input id="labUnit" type="text" placeholder="e.g. mmol/L"></div>
+        <div><label for="labDate">Date</label><input id="labDate" type="date"></div>
+        <div class="full"><label for="labNote">Note</label><input id="labNote" type="text" placeholder="optional — e.g. reference range, fasting"></div>
+        <button type="submit">Save result</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Results <span class="n" id="labsCountLabel"></span></h2>
+      <div id="labsWrap"></div>
+    </div>
+  </section>
+
+  <!-- ===== APPOINTMENTS ===== -->
+  <section class="section" id="section-appts">
+    <div class="card">
+      <h2>Log a doctor's appointment</h2>
+      <form id="apptForm">
+        <div><label for="apptDate">Date</label><input id="apptDate" type="date" required></div>
+        <div><label for="apptTime">Time</label><input id="apptTime" type="time"></div>
+        <div><label for="apptDoctor">Doctor</label><input id="apptDoctor" type="text" placeholder="e.g. Dr. Prasad" required></div>
+        <div><label for="apptReason">Reason</label><input id="apptReason" type="text" placeholder="e.g. Follow-up"></div>
+        <div><label for="apptLocation">Location</label><input id="apptLocation" type="text" placeholder="e.g. CWM Hospital"></div>
+        <div><label for="apptNote">Note</label><input id="apptNote" type="text" placeholder="optional"></div>
+        <button type="submit">Save appointment</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Appointments <span class="n" id="apptCountLabel"></span></h2>
+      <div id="apptWrap"></div>
+    </div>
+  </section>
+
+  <!-- ===== VISIT HISTORY ===== -->
+  <section class="section" id="section-visits">
+    <div class="card">
+      <h2>Log a visit</h2>
+      <form id="visitForm">
+        <div><label for="visitDate">Date</label><input id="visitDate" type="date" required></div>
+        <div><label for="visitPlace">Place</label><input id="visitPlace" type="text" placeholder="e.g. Suva Private Hospital" required></div>
+        <div><label for="visitReason">Reason</label><input id="visitReason" type="text" placeholder="e.g. Fever, checkup"></div>
+        <div class="full"><label for="visitNote">Outcome / notes</label><input id="visitNote" type="text" placeholder="optional"></div>
+        <button type="submit">Save visit</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Visits <span class="n" id="visitCountLabel"></span></h2>
+      <div id="visitWrap"></div>
+    </div>
+  </section>
+
+  <!-- ===== MEDICAL HISTORY ===== -->
+  <section class="section" id="section-history">
+    <div class="card">
+      <h2>Log medical history</h2>
+      <form id="historyForm">
+        <div>
+          <label for="histCategory">Category</label>
+          <select id="histCategory">
+            <option>Condition</option>
+            <option>Allergy</option>
+            <option>Medication</option>
+            <option>Surgery</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div><label for="histDetail">Detail</label><input id="histDetail" type="text" placeholder="e.g. Type 2 Diabetes" required></div>
+        <div><label for="histSince">Since</label><input id="histSince" type="date"></div>
+        <div class="full"><label for="histNote">Note</label><input id="histNote" type="text" placeholder="optional"></div>
+        <button type="submit">Save entry</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>History <span class="n" id="historyCountLabel"></span></h2>
+      <div id="historyWrap"></div>
+    </div>
+  </section>
+</div>
+
+<script>
+// ---------- tabs ----------
+document.getElementById('tabs').addEventListener('click', e => {
+  const btn = e.target.closest('.tab');
+  if(!btn) return;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t === btn));
+  document.querySelectorAll('.section').forEach(s => s.classList.toggle('active', s.id === `section-${btn.dataset.tab}`));
+});
+
+// ---------- shared storage helpers ----------
+function loadList(key){
+  try{ return JSON.parse(localStorage.getItem(key) || '[]'); }
+  catch(e){ return []; }
+}
+function saveList(key, records){
+  localStorage.setItem(key, JSON.stringify(records));
+}
+function newId(){
+  return crypto.randomUUID ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2);
+}
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'});
+}
+
+// ---------- BLOOD PRESSURE ----------
+const BP_KEY = 'mtf_bp_records';
+const bpChartCtx = document.getElementById('bpChart').getContext('2d');
+let bpChart;
+
+function classifyBp(sys, dia){
+  if(sys>=140 || dia>=90) return {label:'Stage 2', color:'var(--high2)'};
+  if(sys>=130 || dia>=80) return {label:'Stage 1', color:'var(--high1)'};
+  if(sys>=120) return {label:'Elevated', color:'var(--elevated)'};
+  return {label:'Normal', color:'var(--normal)'};
+}
+
+function renderBp(){
+  const records = loadList(BP_KEY).sort((a,b)=> new Date(a.ts) - new Date(b.ts));
+  document.getElementById('bpCountLabel').textContent = records.length + ' reading' + (records.length===1?'':'s');
+
+  const labels = records.map(r => new Date(r.ts).toLocaleDateString(undefined,{month:'short',day:'numeric'}));
+  const sysData = records.map(r => r.sys);
+  const diaData = records.map(r => r.dia);
+
+  if(bpChart) bpChart.destroy();
+  bpChart = new Chart(bpChartCtx, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'Systolic', data:sysData, borderColor:'#C1443B', backgroundColor:'#C1443B', tension:.3, pointRadius:3},
+        {label:'Diastolic', data:diaData, borderColor:'#2F6F76', backgroundColor:'#2F6F76', tension:.3, pointRadius:3}
+      ]
+    },
+    options:{
+      responsive:true,
+      plugins:{ legend:{ labels:{ font:{family:'Inter'} } } },
+      scales:{
+        y:{ suggestedMin:50, suggestedMax:180, grid:{color:'#EFEAE0'} },
+        x:{ grid:{display:false} }
+      }
+    }
+  });
+
+  const wrap = document.getElementById('bpHistoryWrap');
+  if(records.length===0){
+    wrap.innerHTML = '<div class="empty">No readings yet — log your first one above.</div>';
+    return;
+  }
+  const rows = records.slice().reverse().map(r=>{
+    const c = classifyBp(r.sys, r.dia);
+    const d = new Date(r.ts);
+    return `<tr>
+      <td class="date">${d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'})} ${d.toLocaleTimeString(undefined,{hour:'2-digit',minute:'2-digit'})}</td>
+      <td>${r.sys}/${r.dia}${r.pulse?` · ${r.pulse}bpm`:''}</td>
+      <td><span class="badge" style="background:${c.color}">${c.label}</span></td>
+      <td class="text">${r.note||''}</td>
+      <td><button class="del" data-id="${r.id}">Remove</button></td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML = `<table>
+    <thead><tr><th>When</th><th>Reading</th><th>Status</th><th>Note</th><th></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+  wrap.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      saveList(BP_KEY, loadList(BP_KEY).filter(r => r.id !== btn.dataset.id));
+      renderBp();
+    });
+  });
+}
+
+document.getElementById('bpForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const sys = parseInt(document.getElementById('sys').value, 10);
+  const dia = parseInt(document.getElementById('dia').value, 10);
+  const pulse = document.getElementById('pulse').value ? parseInt(document.getElementById('pulse').value,10) : null;
+  const dateVal = document.getElementById('bpDate').value;
+  const timeVal = document.getElementById('bpTime').value;
+  const note = document.getElementById('bpNote').value.trim();
+  const ts = dateVal ? new Date(`${dateVal}T${timeVal || '00:00'}`).toISOString() : new Date().toISOString();
+
+  const records = loadList(BP_KEY);
+  records.push({ id: newId(), sys, dia, pulse, note, ts });
+  saveList(BP_KEY, records);
+  e.target.reset();
+  renderBp();
+});
+
+// ---------- BLOOD RESULTS ----------
+const LABS_KEY = 'mtf_labs';
+
+function renderLabs(){
+  const records = loadList(LABS_KEY).sort((a,b)=> new Date(b.date) - new Date(a.date));
+  document.getElementById('labsCountLabel').textContent = records.length + ' result' + (records.length===1?'':'s');
+  const wrap = document.getElementById('labsWrap');
+  if(records.length===0){
+    wrap.innerHTML = '<div class="empty">No results yet — log your first one above.</div>';
+    return;
+  }
+  const rows = records.map(r => `<tr>
+    <td class="date">${fmtDate(r.date)}</td>
+    <td class="text">${r.test}</td>
+    <td>${r.value}${r.unit?` ${r.unit}`:''}</td>
+    <td class="text">${r.note||''}</td>
+    <td><button class="del" data-id="${r.id}">Remove</button></td>
+  </tr>`).join('');
+  wrap.innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Test</th><th>Result</th><th>Note</th><th></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+  wrap.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      saveList(LABS_KEY, loadList(LABS_KEY).filter(r => r.id !== btn.dataset.id));
+      renderLabs();
+    });
+  });
+}
+
+document.getElementById('labsForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const test = document.getElementById('labTest').value.trim();
+  const value = document.getElementById('labValue').value.trim();
+  const unit = document.getElementById('labUnit').value.trim();
+  const dateVal = document.getElementById('labDate').value || new Date().toISOString().slice(0,10);
+  const note = document.getElementById('labNote').value.trim();
+
+  const records = loadList(LABS_KEY);
+  records.push({ id: newId(), test, value, unit, date: dateVal, note });
+  saveList(LABS_KEY, records);
+  e.target.reset();
+  renderLabs();
+});
+
+// ---------- APPOINTMENTS ----------
+const APPT_KEY = 'mtf_appointments';
+
+function renderAppts(){
+  const records = loadList(APPT_KEY).sort((a,b)=> new Date(a.date + 'T' + (a.time||'00:00')) - new Date(b.date + 'T' + (b.time||'00:00')));
+  document.getElementById('apptCountLabel').textContent = records.length + ' appointment' + (records.length===1?'':'s');
+  const wrap = document.getElementById('apptWrap');
+  if(records.length===0){
+    wrap.innerHTML = '<div class="empty">No appointments yet — log your first one above.</div>';
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  const rows = records.map(r => {
+    const upcoming = r.date >= today;
+    return `<tr>
+      <td class="date">${fmtDate(r.date)}${r.time?` · ${r.time}`:''}</td>
+      <td class="text">${r.doctor}</td>
+      <td class="text">${r.reason||''}</td>
+      <td class="text">${r.location||''}</td>
+      <td><span class="badge" style="background:${upcoming?'var(--upcoming)':'var(--past)'}">${upcoming?'Upcoming':'Past'}</span></td>
+      <td><button class="del" data-id="${r.id}">Remove</button></td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML = `<table>
+    <thead><tr><th>When</th><th>Doctor</th><th>Reason</th><th>Location</th><th>Status</th><th></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+  wrap.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      saveList(APPT_KEY, loadList(APPT_KEY).filter(r => r.id !== btn.dataset.id));
+      renderAppts();
+    });
+  });
+}
+
+document.getElementById('apptForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const date = document.getElementById('apptDate').value;
+  const time = document.getElementById('apptTime').value;
+  const doctor = document.getElementById('apptDoctor').value.trim();
+  const reason = document.getElementById('apptReason').value.trim();
+  const location = document.getElementById('apptLocation').value.trim();
+  const note = document.getElementById('apptNote').value.trim();
+
+  const records = loadList(APPT_KEY);
+  records.push({ id: newId(), date, time, doctor, reason, location, note });
+  saveList(APPT_KEY, records);
+  e.target.reset();
+  renderAppts();
+});
+
+// ---------- VISIT HISTORY ----------
+const VISIT_KEY = 'mtf_visits';
+
+function renderVisits(){
+  const records = loadList(VISIT_KEY).sort((a,b)=> new Date(b.date) - new Date(a.date));
+  document.getElementById('visitCountLabel').textContent = records.length + ' visit' + (records.length===1?'':'s');
+  const wrap = document.getElementById('visitWrap');
+  if(records.length===0){
+    wrap.innerHTML = '<div class="empty">No visits logged yet — log your first one above.</div>';
+    return;
+  }
+  const rows = records.map(r => `<tr>
+    <td class="date">${fmtDate(r.date)}</td>
+    <td class="text">${r.place}</td>
+    <td class="text">${r.reason||''}</td>
+    <td class="text">${r.note||''}</td>
+    <td><button class="del" data-id="${r.id}">Remove</button></td>
+  </tr>`).join('');
+  wrap.innerHTML = `<table>
+    <thead><tr><th>Date</th><th>Place</th><th>Reason</th><th>Outcome / notes</th><th></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+  wrap.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      saveList(VISIT_KEY, loadList(VISIT_KEY).filter(r => r.id !== btn.dataset.id));
+      renderVisits();
+    });
+  });
+}
+
+document.getElementById('visitForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const date = document.getElementById('visitDate').value;
+  const place = document.getElementById('visitPlace').value.trim();
+  const reason = document.getElementById('visitReason').value.trim();
+  const note = document.getElementById('visitNote').value.trim();
+
+  const records = loadList(VISIT_KEY);
+  records.push({ id: newId(), date, place, reason, note });
+  saveList(VISIT_KEY, records);
+  e.target.reset();
+  renderVisits();
+});
+
+// ---------- MEDICAL HISTORY ----------
+const HISTORY_KEY = 'mtf_history';
+const CATEGORY_COLOR = {
+  Condition:'var(--high1)', Allergy:'var(--elevated)', Medication:'var(--normal)',
+  Surgery:'var(--high2)', Other:'var(--past)'
+};
+
+function renderHistory(){
+  const records = loadList(HISTORY_KEY).sort((a,b)=> new Date(b.since||0) - new Date(a.since||0));
+  document.getElementById('historyCountLabel').textContent = records.length + ' entr' + (records.length===1?'y':'ies');
+  const wrap = document.getElementById('historyWrap');
+  if(records.length===0){
+    wrap.innerHTML = '<div class="empty">No medical history logged yet — log your first entry above.</div>';
+    return;
+  }
+  const rows = records.map(r => `<tr>
+    <td><span class="badge" style="background:${CATEGORY_COLOR[r.category]||'var(--past)'}">${r.category}</span></td>
+    <td class="text">${r.detail}</td>
+    <td class="date">${r.since ? fmtDate(r.since) : ''}</td>
+    <td class="text">${r.note||''}</td>
+    <td><button class="del" data-id="${r.id}">Remove</button></td>
+  </tr>`).join('');
+  wrap.innerHTML = `<table>
+    <thead><tr><th>Category</th><th>Detail</th><th>Since</th><th>Note</th><th></th></tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+  wrap.querySelectorAll('.del').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      saveList(HISTORY_KEY, loadList(HISTORY_KEY).filter(r => r.id !== btn.dataset.id));
+      renderHistory();
+    });
+  });
+}
+
+document.getElementById('historyForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const category = document.getElementById('histCategory').value;
+  const detail = document.getElementById('histDetail').value.trim();
+  const since = document.getElementById('histSince').value;
+  const note = document.getElementById('histNote').value.trim();
+
+  const records = loadList(HISTORY_KEY);
+  records.push({ id: newId(), category, detail, since, note });
+  saveList(HISTORY_KEY, records);
+  e.target.reset();
+  renderHistory();
+});
+
+renderBp();
+renderLabs();
+renderAppts();
+renderVisits();
+renderHistory();
+</script>
+</body>
+</html>
