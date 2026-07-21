@@ -12,8 +12,9 @@ import ContactPage from './pages/ContactPage';
 import PlayPage from './pages/PlayPage';
 import ToolsPage from './pages/ToolsPage';
 import AskLvtsPage from './pages/AskLvtsPage';
+import ComicPage from './pages/ComicPage';
 
-const VALID_PAGES = ['home', 'services', 'website', 'threed', 'rewards', 'ranger', 'play', 'tools', 'ask', 'contact'];
+const VALID_PAGES = ['home', 'services', 'website', 'threed', 'rewards', 'ranger', 'play', 'tools', 'comic', 'ask', 'contact'];
 
 function initialPage() {
   const hash = window.location.hash.replace('#', '');
@@ -30,6 +31,7 @@ function renderPage(page: string, onNav: (p: string) => void) {
     case 'ranger':   return <RangerPage />;
     case 'play':     return <PlayPage />;
     case 'tools':    return <ToolsPage />;
+    case 'comic':    return <ComicPage />;
     case 'ask':      return <AskLvtsPage />;
     case 'contact':  return <ContactPage />;
     default:         return null;
