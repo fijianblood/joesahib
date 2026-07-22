@@ -1,10 +1,19 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Play, RotateCcw, CheckCircle2, Lock, Trophy, Lightbulb, Gamepad2 } from 'lucide-react';
+import { Play, RotateCcw, CheckCircle2, Lock, Trophy, Lightbulb, Gamepad2, User, Mail, Phone, Loader2, AlertCircle } from 'lucide-react';
 import { useScrollFade } from '../hooks/useScrollFade';
 import { runWeave } from '../lang/weave';
 import { WEAVE_CHALLENGES, SANDBOX_SAMPLE, CHEATSHEET } from '../data/weaveChallenges';
 
 const PROGRESS_KEY = 'weave_progress_v1';
+const SIGNUP_KEY = 'weave_signup_v1';
+const COMPLETION_KEY = 'weave_completion_notified_v1';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xzdlvpyl';
+
+interface Player {
+  name: string;
+  email: string;
+  phone: string;
+}
 
 function loadProgress(): Record<string, boolean> {
   try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch { return {}; }
@@ -13,13 +22,104 @@ function saveProgress(p: Record<string, boolean>) {
   try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch { /* storage unavailable */ }
 }
 
+function loadPlayer(): Player | null {
+  try { return JSON.parse(localStorage.getItem(SIGNUP_KEY) || 'null'); } catch { return null; }
+}
+function savePlayer(p: Player) {
+  try { localStorage.setItem(SIGNUP_KEY, JSON.stringify(p)); } catch { /* storage unavailable */ }
+}
+
 function outputsMatch(actual: string[], expected: string[]) {
   if (actual.length !== expected.length) return false;
   return actual.every((line, i) => line.trim() === expected[i].trim());
 }
 
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[0-9+\-\s()]{6,20}$/;
+
+function SignupGate({ onSignedUp }: { onSignedUp: (p: Player) => void }) {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmedName = name.trim();
+    const trimmedPhone = phone.trim();
+    if (!trimmedName) { setError('Please enter your name.'); return; }
+    if (!EMAIL_RE.test(email.trim())) { setError('Please enter a valid email address.'); return; }
+    if (!PHONE_RE.test(trimmedPhone)) { setError('Please enter a valid phone number.'); return; }
+
+    setError('');
+    setSubmitting(true);
+    const player: Player = { name: trimmedName, email: email.trim(), phone: trimmedPhone };
+    try {
+      const data = new FormData();
+      data.append('name', player.name);
+      data.append('email', player.email);
+      data.append('phone', player.phone);
+      data.append('_subject', 'Weave Playground — new signup');
+      data.append('message', `${player.name} just signed up to play the Weave Playground $50 FJD contest.`);
+      const res = await fetch(FORMSPREE_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } });
+      if (!res.ok) throw new Error('Submission failed');
+      savePlayer(player);
+      onSignedUp(player);
+    } catch {
+      setError('Could not reach the server. Check your connection and try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const inputStyle: React.CSSProperties = {
+    width: '100%', background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: 10,
+    padding: '0.75rem 1rem 0.75rem 2.5rem', color: '#0f172a', fontFamily: "'Space Grotesk',sans-serif",
+    fontSize: '0.95rem', outline: 'none',
+  };
+  const iconStyle: React.CSSProperties = { position: 'absolute', left: '0.85rem', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' };
+
+  return (
+    <div style={{ maxWidth: 460, margin: '0 auto' }}>
+      <div className="card-3d" style={{ background: '#fff', border: '1px solid #e2e8f0', borderRadius: 14, padding: '1.6rem' }}>
+        <div style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem', marginBottom: '0.4rem' }}>Enter to play</div>
+        <p style={{ color: '#64748b', fontSize: '0.85rem', lineHeight: 1.6, marginBottom: '1.2rem' }}>
+          Sign up with your name, email, and phone number to unlock Level 1. This is how the winner gets contacted — no account, no password.
+        </p>
+        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+          <div style={{ position: 'relative' }}>
+            <User size={16} style={iconStyle} />
+            <input type="text" placeholder="Full name" value={name} onChange={e => setName(e.target.value)} style={inputStyle} />
+          </div>
+          <div style={{ position: 'relative' }}>
+            <Mail size={16} style={iconStyle} />
+            <input type="email" placeholder="Email address" value={email} onChange={e => setEmail(e.target.value)} style={inputStyle} />
+          </div>
+          <div style={{ position: 'relative' }}>
+            <Phone size={16} style={iconStyle} />
+            <input type="tel" placeholder="Phone number" value={phone} onChange={e => setPhone(e.target.value)} style={inputStyle} />
+          </div>
+
+          {error && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 8, padding: '0.6rem 0.75rem', color: '#ef4444', fontSize: '0.8rem' }}>
+              <AlertCircle size={14} /> {error}
+            </div>
+          )}
+
+          <button type="submit" disabled={submitting}
+            style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', background: 'linear-gradient(135deg,#2563eb,#7c3aed)', border: 'none', color: '#fff', padding: '0.8rem', borderRadius: 10, fontFamily: "'Space Grotesk',sans-serif", fontWeight: 700, fontSize: '0.9rem', cursor: submitting ? 'not-allowed' : 'pointer', opacity: submitting ? 0.7 : 1 }}>
+            {submitting ? <><Loader2 size={16} className="animate-spin" /> Signing up…</> : 'Start Playing →'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 export default function PlayPage() {
   const heroRef = useScrollFade();
+  const [player, setPlayer] = useState<Player | null>(() => loadPlayer());
   const [mode, setMode] = useState<'challenges' | 'sandbox'>('challenges');
   const [progress, setProgress] = useState<Record<string, boolean>>(() => loadProgress());
   const [levelIdx, setLevelIdx] = useState(0);
@@ -34,6 +134,7 @@ export default function PlayPage() {
 
   const level = WEAVE_CHALLENGES[levelIdx];
   const solvedCount = useMemo(() => Object.values(progress).filter(Boolean).length, [progress]);
+  const hintAvailable = levelIdx < 10; // levels 11-20 are hint-free — figure it out yourself
 
   useEffect(() => {
     setCode(level.starter);
@@ -43,6 +144,21 @@ export default function PlayPage() {
     setShowHint(false);
     setHasRun(false);
   }, [levelIdx, level.starter]);
+
+  useEffect(() => {
+    if (!solved || levelIdx !== WEAVE_CHALLENGES.length - 1 || !player) return;
+    if (localStorage.getItem(COMPLETION_KEY)) return;
+    localStorage.setItem(COMPLETION_KEY, '1');
+    const data = new FormData();
+    data.append('name', player.name);
+    data.append('email', player.email);
+    data.append('phone', player.phone);
+    data.append('_subject', 'Weave Playground — WINNER finished all 20 levels');
+    data.append('message', `${player.name} (${player.email}, ${player.phone}) just completed all 20 levels at ${new Date().toISOString()}.`);
+    fetch(FORMSPREE_ENDPOINT, { method: 'POST', body: data, headers: { Accept: 'application/json' } }).catch(() => {
+      // best-effort — the visible victory page + comment is the primary claim path
+    });
+  }, [solved, levelIdx, player]);
 
   function runChallenge() {
     const result = runWeave(code);
@@ -115,8 +231,24 @@ export default function PlayPage() {
           <p style={{ color: '#64748b', fontSize: '1rem', lineHeight: 1.75 }}>
             A tiny coding language I built where the keywords are web-dev concepts — <code style={{ color: '#0891b2' }}>state</code>, <code style={{ color: '#0891b2' }}>component</code>, <code style={{ color: '#0891b2' }}>mount</code>, <code style={{ color: '#0891b2' }}>route</code>. Real interpreter, running live in your browser. Play through the levels or freestyle in the sandbox.
           </p>
+
+          <div style={{ marginTop: '1.75rem', background: 'linear-gradient(135deg,#16a34a,#0891b2,#2563eb)', borderRadius: 14, padding: '1.2rem 1.5rem', textAlign: 'center' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.4rem' }}>
+              <Trophy size={18} color="#fff" />
+              <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1rem', color: '#fff' }}>$50 FJD Contest</span>
+            </div>
+            <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.85rem', lineHeight: 1.7 }}>
+              Open 22 July 2026, 6:00 PM – 23 July 2026, 7:00 PM (Fiji time). Levels unlock one at a time —
+              beat all 20 to reach the victory page, then screenshot it and post it in the comments.
+              First to comment wins.
+            </div>
+          </div>
         </div>
 
+        {!player ? (
+          <SignupGate onSignedUp={setPlayer} />
+        ) : (
+        <>
         {/* Mode toggle */}
         <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBottom: '2rem' }}>
           {(['challenges', 'sandbox'] as const).map(m => (
@@ -184,13 +316,15 @@ export default function PlayPage() {
                     style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', border: '1px solid #e2e8f0', color: '#475569', padding: '0.6rem 1.1rem', borderRadius: 8, fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>
                     <RotateCcw size={14} /> Reset
                   </button>
-                  <button onClick={() => setShowHint(h => !h)}
-                    style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', border: '1px solid #e2e8f0', color: '#d97706', padding: '0.6rem 1.1rem', borderRadius: 8, fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>
-                    <Lightbulb size={14} /> {showHint ? 'Hide Hint' : 'Hint'}
-                  </button>
+                  {hintAvailable && (
+                    <button onClick={() => setShowHint(h => !h)}
+                      style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: '#fff', border: '1px solid #e2e8f0', color: '#d97706', padding: '0.6rem 1.1rem', borderRadius: 8, fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer' }}>
+                      <Lightbulb size={14} /> {showHint ? 'Hide Hint' : 'Hint'}
+                    </button>
+                  )}
                 </div>
 
-                {showHint && (
+                {hintAvailable && showHint && (
                   <pre style={{ marginTop: '0.8rem', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '0.75rem 1rem', fontSize: '0.78rem', color: '#92400e', fontFamily: "'JetBrains Mono',monospace", whiteSpace: 'pre-wrap' }}>{level.hint}</pre>
                 )}
 
@@ -206,6 +340,23 @@ export default function PlayPage() {
                         Next Level →
                       </button>
                     )}
+                  </div>
+                )}
+
+                {solved && levelIdx === WEAVE_CHALLENGES.length - 1 && (
+                  <div id="victory-page" style={{ marginTop: '0.9rem', background: 'linear-gradient(135deg,#16a34a,#0891b2,#2563eb)', borderRadius: 12, padding: '1.4rem 1.6rem', textAlign: 'center' }}>
+                    <Trophy size={26} color="#fff" style={{ marginBottom: '0.5rem' }} />
+                    <div style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1.15rem', color: '#fff', marginBottom: '0.4rem' }}>
+                      VICTORY — All 20 levels complete! 🏆
+                    </div>
+                    <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.85rem', marginBottom: '1rem', lineHeight: 1.7 }}>
+                      Screenshot this page and post it in the comments to claim your $50 FJD — first to comment wins.
+                      Contest runs 22 July 2026 6:00 PM – 23 July 2026 7:00 PM.
+                    </div>
+                    <a href={`${import.meta.env.BASE_URL}#contact`}
+                      style={{ display: 'inline-block', background: '#fff', color: '#166534', padding: '0.6rem 1.4rem', borderRadius: 8, fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>
+                      Contact Me →
+                    </a>
                   </div>
                 )}
 
@@ -260,6 +411,8 @@ export default function PlayPage() {
             ))}
           </div>
         </div>
+        </>
+        )}
       </section>
     </>
   );
