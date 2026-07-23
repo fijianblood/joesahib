@@ -238,7 +238,7 @@ export default function PlayPage() {
               <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: '1rem', color: '#fff' }}>$50 FJD Contest</span>
             </div>
             <div style={{ color: 'rgba(255,255,255,0.92)', fontSize: '0.85rem', lineHeight: 1.7 }}>
-              Open 22 July 2026, 6:00 PM – 23 July 2026, 7:00 PM (Fiji time). Levels unlock one at a time —
+              Open 22 July 2026, 6:00 PM – 30 July 2026, 7:00 PM (Fiji time). Levels unlock one at a time —
               beat all 20 to reach the victory page, then screenshot it and post it in the comments.
               First to comment wins.
             </div>
@@ -351,7 +351,7 @@ export default function PlayPage() {
                     </div>
                     <div style={{ color: 'rgba(255,255,255,0.9)', fontSize: '0.85rem', marginBottom: '1rem', lineHeight: 1.7 }}>
                       Screenshot this page and post it in the comments to claim your $50 FJD — first to comment wins.
-                      Contest runs 22 July 2026 6:00 PM – 23 July 2026 7:00 PM.
+                      Contest runs 22 July 2026 6:00 PM – 30 July 2026 7:00 PM.
                     </div>
                     <a href={`${import.meta.env.BASE_URL}#contact`}
                       style={{ display: 'inline-block', background: '#fff', color: '#166534', padding: '0.6rem 1.4rem', borderRadius: 8, fontWeight: 700, fontSize: '0.85rem', textDecoration: 'none' }}>
