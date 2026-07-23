@@ -14,8 +14,9 @@ import ToolsPage from './pages/ToolsPage';
 import AskLvtsPage from './pages/AskLvtsPage';
 import ComicPage from './pages/ComicPage';
 import MediTrackPage from './pages/MediTrackPage';
+import LiveTvPage from './pages/LiveTvPage';
 
-const VALID_PAGES = ['home', 'services', 'website', 'threed', 'rewards', 'ranger', 'play', 'tools', 'comic', 'meditrack', 'ask', 'contact'];
+const VALID_PAGES = ['home', 'services', 'website', 'threed', 'rewards', 'ranger', 'play', 'tools', 'comic', 'meditrack', 'tv', 'ask', 'contact'];
 
 function initialPage() {
   const hash = window.location.hash.replace('#', '');
@@ -34,6 +35,7 @@ function renderPage(page: string, onNav: (p: string) => void) {
     case 'tools':    return <ToolsPage />;
     case 'comic':    return <ComicPage />;
     case 'meditrack': return <MediTrackPage onNav={onNav} />;
+    case 'tv':       return <LiveTvPage />;
     case 'ask':      return <AskLvtsPage />;
     case 'contact':  return <ContactPage />;
     default:         return null;

@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import {
   IconTool, IconWorld, IconCube, IconGift, IconTruck,
-  IconDeviceGamepad2, IconHammer, IconAntenna, IconHeartbeat, IconMessageCircle, IconMail,
+  IconDeviceGamepad2, IconHammer, IconAntenna, IconHeartbeat, IconDeviceTv, IconMessageCircle, IconMail,
 } from '@tabler/icons-react';
 
 interface NavBarProps {
@@ -21,6 +21,7 @@ const LINKS = [
   { id: 'tools', label: 'Tools', icon: IconHammer, color: '#f97316' },
   { id: 'comic', label: 'Na Signala', icon: IconAntenna, color: '#0891b2' },
   { id: 'meditrack', label: 'MediTrack', icon: IconHeartbeat, color: '#c1443b' },
+  { id: 'tv', label: 'Live TV', icon: IconDeviceTv, color: '#0f172a' },
   { id: 'ask', label: 'Ask LvTS', icon: IconMessageCircle, color: '#6366f1' },
   { id: 'contact', label: 'Contact', icon: IconMail, color: '#ef4444' },
 ];
